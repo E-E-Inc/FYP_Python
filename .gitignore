@@ -1,0 +1,22 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*~
+.DS_Store
+Thumbs.db
+logs/
+output/
+data/
+models/
+.env
+.env.local
+.vscode/
+.idea/
+docs/
+generated_images/
+.pip/
+dist/
+build/
