@@ -9,9 +9,10 @@ myenv\Scripts\activate
 
 ###  Install project dependencies 
 we will install the dependencies that are in requirements.txt
+pip install -r requirements.txt
 
 ###  run the python code 
-python my-python-file.py
+python .\src\FoodRecognition\IdentifyFood.py
 
 ## Output
 ![image](https://github.com/E-E-Inc/FYP_Python/assets/97171476/bb67c2a7-03c6-449c-8283-371db00a1d38)
