@@ -15,5 +15,5 @@ preds = model.predict(x)
 
 predictions = decode_predictions(preds, top=1)[0][0]
 
-print(f'The food in the picture is: {predictions[1]}')
+print(f'The food identified: {predictions[1]}')
 
