@@ -1,3 +1,4 @@
+import tensorflow
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
@@ -15,5 +16,4 @@ preds = model.predict(x)
 
 predictions = decode_predictions(preds, top=1)[0][0]
 
-print(f'The food identified: {predictions[1]}')
-
+s = predictions[1]
