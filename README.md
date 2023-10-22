@@ -8,8 +8,10 @@ To run this project, we recommend creating a Python virtual environment and inst
 myenv\Scripts\activate
 
 ###  Install project dependencies 
-we will install the dependencies that are in requirements.txt
 pip install -r requirements.txt
+
+### Start the server
+python .\src\flask-server.py
 
 ###  run the python code 
 #### print calorie information
