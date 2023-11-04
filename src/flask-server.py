@@ -7,13 +7,13 @@ from FoodRecognition import IdentifyFoodYolo
 
 app = Flask(__name__)
 CORS(app)
+IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 # Handle POST request to '/upload' endpoint for uploading an image
 @app.route('/upload', methods=['POST'])
 def upload():
     # Get the file from post request
     file = request.files['file']
-    # file_contents = file.read()
     
 
     # TODO: Process the image asynchronously using a message queue
@@ -21,8 +21,9 @@ def upload():
     if file:
         # Secure the filename to avoid unsafe characters
         filename = secure_filename(file.filename)
+        
         # Save the file to a temporary location to be processed
-        temp_path = os.path.join('/path/to/temp', filename)
+        temp_path = os.path.join(IMAGES_DIR, filename)
         file.save(temp_path)
 
         # Call the function to process the image
@@ -34,7 +35,6 @@ def upload():
         return jsonify(result=result)
 
     # Return the result
-    # if file_contents is None:
     if file.filename == '':
         response = {'status': 'error', 'message': 'Error processing image'}
     else:
