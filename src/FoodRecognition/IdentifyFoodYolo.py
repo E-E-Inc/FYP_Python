@@ -11,10 +11,11 @@ def Identification(image_path):
 
     # Run the model on the image and store the results
     result = model(load_image, classes=[46, 47, 48, 49, 50, 51, 52, 53, 54, 55])
-
-    #Store the class id of the first detected object 
-    detected_class_id = result[0].boxes.cls.item()
-
+    
+    if result and result[0].boxes.cls.nelement() > 0:
+        detected_class_id = result[0].boxes.cls.item()
+    else:
+        detected_class_id = None
 
     #List of Ultralytics classes
     ultralytics_classes = {
