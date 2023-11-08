@@ -10,7 +10,7 @@ def Identification(image_path):
     load_image = cv2.imread(image_path)
 
     # Run the model on the image and store the results
-    result = model(load_image, classes=[46])
+    result = model(load_image, classes=[46, 47, 48, 49, 50, 51, 52, 53, 54, 55])
 
     #Store the class id of the first detected object 
     detected_class_id = result[0].boxes.cls.item()
@@ -18,7 +18,7 @@ def Identification(image_path):
 
     #List of Ultralytics classes
     ultralytics_classes = {
-     0: 'person', 1: 'bicycle', 2: 'car', 3: 'motorcycle', 4: 'airplane', 5: 'bus', 6: 'train',
+        0: 'person', 1: 'bicycle', 2: 'car', 3: 'motorcycle', 4: 'airplane', 5: 'bus', 6: 'train',
         7: 'truck', 8: 'boat', 9: 'traffic light', 10: 'fire hydrant', 11: 'stop sign', 12: 'parking meter',
         13: 'bench', 14: 'bird', 15: 'cat', 16: 'dog', 17: 'horse', 18: 'sheep', 19: 'cow', 20: 'elephant',
         21: 'bear', 22: 'zebra', 23: 'giraffe', 24: 'backpack', 25: 'umbrella', 26: 'handbag', 27: 'tie',
