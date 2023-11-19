@@ -4,7 +4,9 @@ import cv2
 
 def Identification(image_path):
     #define model
-    model = YOLO('yolov8n.pt')
+   # model = YOLO('yolov8n.pt')
+    model = YOLO('runs/train/Custom_dataset/weights/best.pt')
+
 
     # Read image and store it 
     load_image = cv2.imread(image_path)

@@ -1,0 +1,5 @@
+We run this command for both training, validation,
+to do so we change the mode from train to val
+
+yolo task=detect mode=train model=yolov8n.pt imgsz=640 data=data.yaml epochs=10 batch=8 name=Custom_dataset
+
