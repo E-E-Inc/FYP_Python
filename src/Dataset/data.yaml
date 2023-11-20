@@ -1,7 +1,7 @@
 
-train: E:\College\Year4\Semester1\FYP_Folder\FYP_Python\src\Dataset\train\images
-val: E:\College\Year4\Semester1\FYP_Folder\FYP_Python\src\Dataset\valid\images
-test: E:\College\Year4\Semester1\FYP_Folder\FYP_Python\src\Dataset\test\images
+train: /home/comp08011/Documents/FYP_Python/src/Dataset/train/images
+val: /home/comp08011/Documents/FYP_Python/src/Dataset/valid/images
+test: /home/comp08011/Documents/FYP_Python/src/Dataset/test/images
 
 nc: 30
 names: ['alcohol', 'alcohol_glass', 'almond', 'avocado', 'blackberry', 'blueberry', 'bread', 'bread_loaf', 'capsicum', 'cheese', 'chocolate', 'cooked_meat', 'dates', 'egg', 'eggplant', 'icecream', 'milk', 'milk_based_beverage', 'mushroom', 'non_milk_based_beverage', 'pasta', 'pineapple', 'pistachio', 'pizza', 'raw_meat', 'roti', 'spinach', 'strawberry', 'tomato', 'whole_egg_boiled']

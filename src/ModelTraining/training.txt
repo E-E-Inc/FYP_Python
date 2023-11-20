@@ -2,7 +2,8 @@ We run this command for both training, validation,
 to do so we change the mode from train to val
 
 data should be the path that data.yaml is stored on
-yolo task=detect mode=train model=yolov8n.pt imgsz=640 data=E:\College\Year4\Semester1\FYP_Folder\FYP_Python\src\Dataset\data.yaml epochs=10 batch=8 name=Custom_dataset
+yolo task=detect mode=train model=yolov8n.pt imgsz=640 data=/home/comp08011/Documents/FYP_Python/src/Dataset/data.yaml epochs=10 batch=8 name=Custom_dataset
 
 if the Ultralytics file is not in the App Data then create it with settings.yaml 
 In the settings.yaml the dataset_download is the location of the dataset
+
