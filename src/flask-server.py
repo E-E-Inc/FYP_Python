@@ -3,7 +3,7 @@ from flask_cors import CORS
 import json
 import os
 from werkzeug.utils import secure_filename
-from FoodRecognition import IdentifyFood
+from FoodRecognition import IdentifyFoodYolo
 
 app = Flask(__name__)
 CORS(app)
@@ -27,7 +27,7 @@ def upload():
         file.save(temp_path)
 
         # Call the function to process the image
-        result = IdentifyFood.Identification(temp_path)
+        result = IdentifyFoodYolo.Identification(temp_path)
 
         # Optionally remove the temporary file if no longer needed
         os.remove(temp_path)

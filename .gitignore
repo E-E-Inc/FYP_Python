@@ -21,4 +21,5 @@ generated_images/
 dist/
 build/
 myenv/
+myenv2/
 blob.png
