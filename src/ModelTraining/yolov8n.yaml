@@ -1,0 +1,3 @@
+model:
+  type: YOLOv8 
+  nc: 100  
