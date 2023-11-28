@@ -7,4 +7,4 @@ yolo task=detect mode=train model=yolov8n.pt imgsz=640 data=/home/comp08011/Docu
 if the Ultralytics file is not in the App Data then create it with settings.yaml 
 In the settings.yaml the dataset_download is the location of the dataset
 
-yolo task=detect mode=train model=yolov8n.pt imgsz=640 data=src\Dataset\data.yaml epochs=10 batch=8 name=Custom_dataset
+yolo task=detect mode=train model=runs/detect/train10/weights/best.pt imgsz=640 data=/home/comp08011/Desktop/Training/FYP_Python/src/Dataset/data.yaml epochs=10 batch=8 name=tester
