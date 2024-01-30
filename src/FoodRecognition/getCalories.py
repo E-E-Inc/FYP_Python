@@ -14,11 +14,17 @@ session.params = {'api_key': api_key}
 
 # Searches for food item
 search_url = base_url + 'foods/search'
+
+# Make API request
 response = session.get(search_url, params={'query': food_name})
 
 # if there is a 200 response then its good!
 if response.status_code == 200:
+
+    # Preprocesses the response data
     data = response.json()
+
+    # Check if the key "Foods" exists in database
     if data['foods']:
         # Access first result
         fdc_id = data['foods'][0]['fdcId']
