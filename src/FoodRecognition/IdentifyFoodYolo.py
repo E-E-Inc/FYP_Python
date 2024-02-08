@@ -10,7 +10,7 @@ def Identification(image_path):
     load_image = cv2.imread(image_path)
 
     # Run the model on the image and store the results
-    result = model(load_image, classes=[46, 47, 48, 49, 50, 51, 52, 53, 54, 55])
+    result = model(load_image, classes=[46])
     
     if result and result[0].boxes.cls.nelement() > 0:
         detected_class_id = result[0].boxes.cls.item()
@@ -43,7 +43,12 @@ def Identification(image_path):
 
     print(f"Item detected is {detected_item}")
     s = detected_item
+
+    # Call the calories function 
     getCalories.Calories(s)
+
+    # Reset the detected item
+    detected_class_id = None
     return s
 
 #Checks if script is being run directly
