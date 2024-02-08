@@ -1,7 +1,7 @@
 import argparse
 from ultralytics import YOLO
 import cv2
-
+from FoodRecognition import getCalories
 def Identification(image_path):
     #define model
     model = YOLO('yolov8n.pt')
@@ -43,6 +43,7 @@ def Identification(image_path):
 
     print(f"Item detected is {detected_item}")
     s = detected_item
+    getCalories.Calories(s)
     return s
 
 #Checks if script is being run directly
