@@ -1,14 +1,10 @@
 import requests
 import json
 
-def Calories(query):
+def Calories(query, portion_size):
     #uses API to get calorie information
     api_url = 'https://api.api-ninjas.com/v1/nutrition?query={}'.format(query)
     response = requests.get(api_url, headers={'X-Api-Key': 'V9yArwyqPfnqYsxWWwRSng==HTX0HgBcu8SqUeph'})
-
-    # Manually set portion size
-    portionsize = 2
-
 
     # Check response status
     if response.status_code == requests.codes.ok:
@@ -23,7 +19,7 @@ def Calories(query):
         calories = first_item.get('calories')
 
         # Multiplication based on portion size
-        overallcalories = calories * portionsize
+        overallcalories = float(calories) * float(portion_size)
 
         # Printing
         print("Calories per item: ", calories)

@@ -21,13 +21,14 @@ def upload():
     if file:
         # Secure the filename to avoid unsafe characters
         filename = secure_filename(file.filename)
-        
+        portion_size = request.form.get('portionSize')
+
         # Save the file to a temporary location to be processed
         temp_path = os.path.join(IMAGES_DIR, filename)
         file.save(temp_path)
 
         # Call the function to process the image
-        result = IdentifyFoodYolo.Identification(temp_path)
+        result = IdentifyFoodYolo.Identification(temp_path, portion_size)
 
         # Optionally remove the temporary file if no longer needed
         os.remove(temp_path)
