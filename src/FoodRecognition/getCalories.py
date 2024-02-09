@@ -19,7 +19,7 @@ def Calories(query, portion_size):
         calories = first_item.get('calories')
 
         # Multiplication based on portion size
-        overallcalories = float(calories) * float(portion_size)
+        overallcalories = int(calories) * int(portion_size)
 
         # Printing
         print("Calories per item: ", calories)

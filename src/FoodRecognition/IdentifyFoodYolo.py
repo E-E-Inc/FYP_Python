@@ -48,7 +48,7 @@ def Identification(image_path, portion_size):
     getCalories.Calories(s, portion_size)
 
     # Reset the detected item
-    detected_class_id = None
+    #detected_class_id = None
     return s
 
 #Checks if script is being run directly
