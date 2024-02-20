@@ -13,7 +13,7 @@ def Identification(image_path, portion_size):
     result = model(load_image, classes=[46, 47, 48, 49, 50, 51, 52, 53, 54])
     
     if result and result[0].boxes.cls.nelement() > 0:
-        detected_class_id = result[0].boxes.cls.item()
+        detected_class_id = result[0].boxes.cls.tolist()
     else:
         detected_class_id = None
 
@@ -33,13 +33,14 @@ def Identification(image_path, portion_size):
         73: 'book', 74: 'clock', 75: 'vase', 76: 'scissors', 77: 'teddy bear', 78: 'hair drier',
         79: 'toothbrush'
     }
-
-    #If the item name is in the class
-    if(detected_class_id in ultralytics_classes):
-        #stores the name of the coresponding class from ultralytics_classes
-        detected_item = ultralytics_classes[detected_class_id]
-    else:
-        detected_item='Unknown'
+    # If the item name is in the class
+    for class_id in detected_class_id:
+        #If the item name is in the class
+        if(class_id in ultralytics_classes):
+            #stores the name of the coresponding class from ultralytics_classes
+            detected_item = ultralytics_classes[class_id]
+        else:
+            detected_item='Unknown'
 
     print(f"Item detected is {detected_item}")
     s = detected_item
@@ -49,6 +50,7 @@ def Identification(image_path, portion_size):
 
     # Reset the detected item
     detected_class_id = None
+    result = 0
     return s
 
 #Checks if script is being run directly

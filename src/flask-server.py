@@ -3,11 +3,8 @@ from flask_cors import CORS
 import json
 import os
 from werkzeug.utils import secure_filename
-from FoodRecognition import IdentifyFoodYolo
-
+from FoodRecognition import IdentifyFoodYolo, getCalories
 from flask_bcrypt import Bcrypt  # Importing Bcrypt for password hashing
-import jwt  # Importing JWT for token-based authentication
-import datetime
 import mysql.connector  # Importing MySQL connector for database interaction
 import secrets
 
@@ -18,13 +15,15 @@ secret_key = secrets.token_hex(32)
 
 CORS(app)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
+
 app.config['SECRET_KEY'] = os.urandom(24)
+
 # MySQL Connection
 db = mysql.connector.connect(
-     host="fyp-db-24.cjyypjykw7a3.us-east-1.rds.amazonaws.com",  # MySQL host
-    port="3306",  # MySQL port
-    user="Marbles7558",  # MySQL user
-    password="UxJ2r$xTT",  # MySQL password
+     host="fyp-db-24.cjyypjykw7a3.us-east-1.rds.amazonaws.com",
+    port="3306", 
+    user="Marbles7558",  
+    password="UxJ2r$xTT", 
     database="mydb" 
 )
 
@@ -68,39 +67,43 @@ def upload():
 @app.route('/process', methods=['POST'])
 def process():
 
-    # takes in the temp_image
+    # takes in the global variables
     global temp_image
-
+    global food_data 
+   
     # Gets the portion size
     data = request.get_json()
     portion_Size = data.get('portionSize')
 
     # If there is an image
     if temp_image:
-        # Call the function to process the image
+        # Call the functions to process the image and get calories
         result = IdentifyFoodYolo.Identification(temp_image, portion_Size)
+        calories = getCalories.Calories(result, portion_Size)
+
+        # Update food_data with the food name and overall calories
+        food_data = {
+            'result': result,
+            'overall_calories': calories
+        }
 
         # Remove the temporary file
         os.remove(temp_image)
         temp_image = None
 
-        return jsonify(result=result)
+        # Define whats in the response
+        response = {
+            'status': 'success',
+            'message': 'Image processed successfully',
+            'result': result,
+            'overall_calories': calories
+        }
+        
+        # return the response
+        return jsonify(response)
+        
     else:
         response = {'status': 'error', 'message': 'No image uploaded'}
-
-    return json.dumps(response)
-
-@app.route('/getFoodData', methods=['GET'])
-def get_food_data():
-    # Referencing the global variable 
-    global food_data
-    print("food_data: ", food_data)
-
-    # If there is a value in the food data
-    if food_data:
-        return jsonify(food_data)
-    else:
-        response  = {'status': 'error', 'message': 'No food data available'}
 
     return json.dumps(response)
 
