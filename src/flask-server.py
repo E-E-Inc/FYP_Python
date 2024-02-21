@@ -7,9 +7,13 @@ from FoodRecognition import IdentifyFoodYolo, getCalories
 from flask_bcrypt import Bcrypt  # Importing Bcrypt for password hashing
 import mysql.connector  # Importing MySQL connector for database interaction
 import secrets
+import logging
+import hashlib
+from dotenv import load_dotenv
+
 
 app = Flask(__name__)
-bcrypt = Bcrypt(app)  # Creating a Bcrypt instance for password hashing
+load_dotenv()
 
 secret_key = secrets.token_hex(32) 
 
@@ -20,11 +24,11 @@ app.config['SECRET_KEY'] = os.urandom(24)
 
 # MySQL Connection
 db = mysql.connector.connect(
-     host="fyp-db-24.cjyypjykw7a3.us-east-1.rds.amazonaws.com",
-    port="3306", 
-    user="Marbles7558",  
-    password="UxJ2r$xTT", 
-    database="mydb" 
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"), 
+    user=os.getenv("DB_USER"),  
+    password=os.getenv("DB_PASSWORD"), 
+    database=os.getenv("DB_NAME")
 )
 
 # Global variable to store the image temporarily
@@ -114,11 +118,11 @@ def registeration():
         data = request.get_json()
         email = data.get('email')
         password = data.get('password')
-
         if not email or not password:
             return jsonify({'error': 'Email and password are required'}), 400
 
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        print("Registration -> Password hashed",hashed_password)
 
         cursor = db.cursor()
         cursor.execute("INSERT INTO Users (email, password) VALUES (%s, %s)", (email, hashed_password))
@@ -132,6 +136,42 @@ def registeration():
     except Exception as e:
         logging.error(f"Registration failed: {str(e)}")
         return jsonify({'error': 'Registration failed'}), 500
+
+
+# Login Endpoint
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        #print(data)
+
+
+        if not email or not password:
+            return jsonify({'error': 'Email and password are required'}), 400
+
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        
+        password_from_db = user["password"]
+        hash_user = hashlib.sha256(password.encode()).hexdigest()
+
+        print(f"password from db: ",password_from_db)
+        print(f"Login -> User entered Hashed password:", hash_user)
+
+
+        if user and hash_user == password_from_db:
+            return jsonify({'message': 'User logged in successfully'})
+        else:
+            return jsonify({'error': 'Invalid email or password'}), 401
+
+            
+    except Exception as e:
+        print(f"Login failed: {str(e)}")
+        return jsonify({'error': 'Login failed'}), 500
+
 
 # Run the server in debug mode - 'python flask-server.py'
 if __name__ == '__main__':
