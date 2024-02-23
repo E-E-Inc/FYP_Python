@@ -12,7 +12,6 @@ def Calories(query, portion_size):
 
         # Load response data
         data = json.loads(response.text)
-
         # Access the first dictionary in the list
         first_item = data[0]  
 
@@ -28,3 +27,7 @@ def Calories(query, portion_size):
         print("Error:", response.status_code, response.text)
 
     return cals
+
+query = "Banana"
+portion_size = 1
+Calories(query, portion_size)

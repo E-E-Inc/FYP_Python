@@ -3,7 +3,7 @@ from flask_cors import CORS
 import json
 import os
 from werkzeug.utils import secure_filename
-from FoodRecognition import IdentifyFoodYolo, getCalories
+from FoodRecognition import IdentifyFoodYolo, getCalories, getNutrientInfo
 import mysql.connector  # Importing MySQL connector for database interaction
 import secrets
 import logging
@@ -38,6 +38,8 @@ userid = None
 
 # Global variable to store food data 
 food_data = None
+
+food_name = None;
 
 # Handle POST request to '/upload' endpoint for uploading an image
 @app.route('/upload', methods=['POST'])
@@ -76,16 +78,20 @@ def process():
     # takes in the global variables
     global temp_image
     global food_data
+    global food_name
    
     # Gets the portion size
     data = request.get_json()
     portion_Size = data.get('portionSize')
-
+    
     # If there is an image
     if temp_image:
         # Call the functions to process the image and get calories
         result = IdentifyFoodYolo.Identification(temp_image, portion_Size)
         calories = getCalories.Calories(result, portion_Size)
+
+        food_name = result
+        overallCalories = calories
 
         # Update food_data with the food name and overall calories
         food_data = {
@@ -94,7 +100,7 @@ def process():
         }
 
          # Insert data into the database
-        insert_food_data(result, portion_Size, userid)
+        insert_food_data(result, portion_Size, userid, overallCalories)
 
         # Remove the temporary file
         os.remove(temp_image)
@@ -196,7 +202,7 @@ def login():
         return jsonify({'error': 'Login failed'}), 500
 
 # Method to enter food into database
-def insert_food_data(food_name, portion_size, uid):
+def insert_food_data(food_name, portion_size, uid, overallCalories):
     global userid
     try:
         cursor = db.cursor()
@@ -206,8 +212,8 @@ def insert_food_data(food_name, portion_size, uid):
         print(timestamp)
 
          # Execute SQL query to insert data into the Food table
-        cursor.execute("INSERT INTO Food (foodName, portionSize, timestamp, uid) VALUES (%s, %s, %s, %s)",
-                       (food_name, portion_size, timestamp, userid))
+        cursor.execute("INSERT INTO Food (foodName, portionSize, timestamp, overallCalories, uid) VALUES (%s, %s, %s, %s, %s)",
+                       (food_name, portion_size, timestamp, overallCalories, userid))
 
         
         # Commit changes
@@ -218,7 +224,6 @@ def insert_food_data(food_name, portion_size, uid):
 
     except Exception as e:
         logging.error(f"Failed to insert food data: {str(e)}")
-
 
 # Information Endpoint
 @app.route('/information', methods=['GET'])
@@ -249,7 +254,6 @@ def information():
     except Exception as e:
         print(f"fetch failed: {str(e)}")
         return jsonify({'error': 'fetch failed'}), 500
-
 
 # Run the server in debug mode - 'python flask-server.py'
 if __name__ == '__main__':
