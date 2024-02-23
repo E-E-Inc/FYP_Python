@@ -4,13 +4,12 @@ import json
 import os
 from werkzeug.utils import secure_filename
 from FoodRecognition import IdentifyFoodYolo, getCalories
-from flask_bcrypt import Bcrypt  # Importing Bcrypt for password hashing
 import mysql.connector  # Importing MySQL connector for database interaction
 import secrets
 import logging
 import hashlib
 from dotenv import load_dotenv
-
+from datetime import datetime
 
 app = Flask(__name__)
 load_dotenv()
@@ -33,6 +32,9 @@ db = mysql.connector.connect(
 
 # Global variable to store the image temporarily
 temp_image = None
+
+# Global variable for user id
+userid = None
 
 # Global variable to store food data 
 food_data = None
@@ -73,7 +75,7 @@ def process():
 
     # takes in the global variables
     global temp_image
-    global food_data 
+    global food_data
    
     # Gets the portion size
     data = request.get_json()
@@ -90,6 +92,9 @@ def process():
             'result': result,
             'overall_calories': calories
         }
+
+         # Insert data into the database
+        insert_food_data(result, portion_Size, userid)
 
         # Remove the temporary file
         os.remove(temp_image)
@@ -115,20 +120,29 @@ def process():
 @app.route('/register', methods=['POST'])
 def registeration():
     try:
+        # Get data from the request
         data = request.get_json()
+
+        # Get email and password
         email = data.get('email')
         password = data.get('password')
+
+        # If there is no email or password entered, throw an error
         if not email or not password:
             return jsonify({'error': 'Email and password are required'}), 400
 
+        # Stored hashed user password in sa variable
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
-        print("Registration -> Password hashed",hashed_password)
 
+        # Create cursor to interact with database
         cursor = db.cursor()
+
+        # Execute SQL query and commit
         cursor.execute("INSERT INTO Users (email, password) VALUES (%s, %s)", (email, hashed_password))
         db.commit()
+
+        # Close connection
         cursor.close()
-        print(f"here")
 
         return jsonify({'message': 'User registered successfully'})
         
@@ -137,30 +151,39 @@ def registeration():
         logging.error(f"Registration failed: {str(e)}")
         return jsonify({'error': 'Registration failed'}), 500
 
-
 # Login Endpoint
 @app.route('/login', methods=['POST'])
 def login():
+    global userid
     try:
+        # Get data from request
         data = request.get_json()
+
+        # Get email and password
         email = data.get('email')
         password = data.get('password')
-        #print(data)
 
-
+        # If there is no email or password entered, throw an error
         if not email or not password:
             return jsonify({'error': 'Email and password are required'}), 400
 
+        # Create cursor to interact with database returning results as dictionaries
         cursor = db.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
-        user = cursor.fetchone()
         
+        # Execute sql query
+        cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
+
+        # Fetch the first row from the result set
+        user = cursor.fetchone()
+
+        user_id = user["uid"]
+        userid = user_id
+
+        # Extract the hashed password stored in the database for the user
         password_from_db = user["password"]
+
+        # Hash the user password
         hash_user = hashlib.sha256(password.encode()).hexdigest()
-
-        print(f"password from db: ",password_from_db)
-        print(f"Login -> User entered Hashed password:", hash_user)
-
 
         if user and hash_user == password_from_db:
             return jsonify({'message': 'User logged in successfully'})
@@ -171,6 +194,61 @@ def login():
     except Exception as e:
         print(f"Login failed: {str(e)}")
         return jsonify({'error': 'Login failed'}), 500
+
+# Method to enter food into database
+def insert_food_data(food_name, portion_size, uid):
+    global userid
+    try:
+        cursor = db.cursor()
+
+        # Get current timestamp
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+        print(timestamp)
+
+         # Execute SQL query to insert data into the Food table
+        cursor.execute("INSERT INTO Food (foodName, portionSize, timestamp, uid) VALUES (%s, %s, %s, %s)",
+                       (food_name, portion_size, timestamp, userid))
+
+        
+        # Commit changes
+        db.commit()
+
+        # Close cursor
+        cursor.close()
+
+    except Exception as e:
+        logging.error(f"Failed to insert food data: {str(e)}")
+
+
+# Information Endpoint
+@app.route('/information', methods=['GET'])
+def information():
+    try:
+        # Gets value of selected_date from frontend
+        selected_date = request.args.get('selectedDate')
+        
+        # Create cursor to interact with database returning results as dictionaries
+        cursor = db.cursor(dictionary=True)
+        
+        # Execute sql query
+        cursor.execute("SELECT * FROM Food WHERE uid = %s AND DATE(timestamp) = %s", (userid, selected_date))
+
+        # Fetch all rows from the result set
+        rows = cursor.fetchall()
+        print(rows)
+
+        # Close cursor
+        cursor.close()
+        
+        if rows:
+            return jsonify(rows), 200
+        else:
+            return jsonify({'error': 'User not found'}), 404
+
+
+    except Exception as e:
+        print(f"fetch failed: {str(e)}")
+        return jsonify({'error': 'fetch failed'}), 500
 
 
 # Run the server in debug mode - 'python flask-server.py'
