@@ -152,6 +152,13 @@ def registeration():
         # Create cursor to interact with database
         cursor = db.cursor()
 
+        cursor.execute("SELECT * FROM Users where email = %s", (email,))
+        existing = cursor.fetchone()
+        print(existing)
+
+        if existing:
+            return jsonify({'error': 'Email already exists'}), 409
+
         # Execute SQL query and commit
         cursor.execute("INSERT INTO Users (email, password) VALUES (%s, %s)", (email, hashed_password))
         db.commit()
