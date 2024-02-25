@@ -136,6 +136,15 @@ def registeration():
         # If there is no email or password entered, throw an error
         if not email or not password:
             return jsonify({'error': 'Email and password are required'}), 400
+        
+          # Email validation
+        if '@' not in email or '.com' not in email:
+            return jsonify({'error': 'Invalid format for email'}), 400
+        
+        # Password validation
+        if len(password) < 6:
+            return jsonify({'error':'Password must have'}), 400
+        
 
         # Stored hashed user password in sa variable
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
@@ -173,6 +182,13 @@ def login():
         if not email or not password:
             return jsonify({'error': 'Email and password are required'}), 400
 
+        if '@' not in email or '.com' not in email:
+            return jsonify({'error': 'Invalid format for email'}), 400
+        
+        # Password validation
+        if len(password) < 6:
+            return jsonify({'error':'Password must have'}), 400
+        
         # Create cursor to interact with database returning results as dictionaries
         cursor = db.cursor(dictionary=True)
         
