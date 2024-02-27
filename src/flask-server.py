@@ -263,7 +263,6 @@ def information():
 
         # Fetch all rows from the result set
         rows = cursor.fetchall()
-        print(rows)
 
         # Close cursor
         cursor.close()
@@ -273,6 +272,26 @@ def information():
         else:
             return jsonify({'error': 'User not found'}), 404
 
+
+    except Exception as e:
+        print(f"fetch failed: {str(e)}")
+        return jsonify({'error': 'fetch failed'}), 500
+
+# Information Endpoint
+@app.route('/getNutrition', methods=['POST'])
+def showNutritionalInfo():
+    try:
+        data = request.get_json()
+        
+        # Get the information from the data
+        food_name = data['foodName']
+        portion_size = data['portion_size']
+
+        # Call the function to get the nutrient information
+        info = getNutrientInfo.getNutrientInfo(food_name, portion_size)
+
+        #Return a 200 if successful
+        return jsonify(info), 200
 
     except Exception as e:
         print(f"fetch failed: {str(e)}")
