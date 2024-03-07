@@ -41,7 +41,8 @@ userid = None
 # Global variable to store food data 
 food_data = None
 
-food_name = None;
+# food_name = None;
+# portion = None#
 
 # Handle POST request to '/upload' endpoint for uploading an image
 @app.route('/image_upload', methods=['POST'])
@@ -71,7 +72,7 @@ def image_upload():
     
     except Exception as e:
         return jsonify({'error': f'Upload failed: {str(e)}'})
-   
+
 @app.route('/image_process', methods=['POST'])
 def image_process():
 
@@ -87,6 +88,42 @@ def image_process():
     try:
         url= f'{MICROSERVICE_URL}/process'
         response = requests.post(url, json=data)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({'error': 'processing failed'})
+    
+    except Exception as e:
+        return jsonify({'error': f'processing failed: {str(e)}'})
+   
+@app.route('/image_process_manually', methods=['POST'])
+def image_process_manually():
+
+    global userid
+
+    # Gets the portion size
+    data = request.get_json()
+    print("in main flask /image_process_manually > ",data)
+
+    # Extract food name and portion size from the JSON data
+    food_name = data.get('foodName')
+    portion_size = data.get('portion')
+    
+    if not data:
+        return jsonify({'error': 'No data provided'})
+    
+    # Add the user ID to the data
+    data['uid'] = userid
+   
+    try:
+        url= f'{MICROSERVICE_URL}/process_manually'
+        payload = {
+            'foodName': food_name,
+            'portion': portion_size,
+            'uid': userid
+        }
+        response = requests.post(url, json=payload)
+
         if response.status_code == 200:
             return jsonify(response.json())
         else:

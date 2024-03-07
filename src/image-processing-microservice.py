@@ -4,7 +4,7 @@ import json
 import os
 import mysql.connector
 from werkzeug.utils import secure_filename
-from FoodRecognition import IdentifyFoodYolo, getCalories, getNutrientInfo
+from FoodRecognition import IdentifyFoodYolo, getCalories, IdentifyFoodYoloManual
 import mysql.connector
 import secrets
 import logging
@@ -91,6 +91,40 @@ def process():
     except Exception as e:
             return jsonify({'error': f'Error processing image: {str(e)}'}), 500
     
+@app.route('/process_manually', methods=['POST'])
+def process_manually():
+    try:
+        print("In /process_manually microservice")
+       
+        # Gets the portion size
+        data = request.get_json()
+        
+        food_Name = data.get('foodName')
+        portion_Size = data.get('portion')
+        uid = data.get('uid')
+
+        print("Session uid in /process: ", uid)
+        print("Name", food_Name)
+        print ("Portion", portion_Size)
+
+        if not portion_Size:
+            return jsonify({'error': 'No portion size provided'}), 400
+
+        # Call the functions to get calories
+        calories = getCalories.Calories(food_Name, portion_Size)
+        print(calories)
+        print("im here girlie")
+        # Insert data into the database
+        insert_food_data(food_Name, portion_Size, calories, uid)
+        return jsonify({
+                'status': 'success',
+                'result': food_Name,
+                'calories': calories
+            })
+    
+    except Exception as e:
+            return jsonify({'error': f'Error processing image: {str(e)}'}), 500
+    
 # Method to enter food into database
 def insert_food_data(food_name, portion_size, overallCalories, uid):
     print("HERE!!!!!")
@@ -107,7 +141,7 @@ def insert_food_data(food_name, portion_size, overallCalories, uid):
             # Get current timestamp
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
             print(timestamp)
-
+            print("Almost there girlie")
             # Execute SQL query to insert data into the Food table
             cursor.execute("INSERT INTO Food (foodName, portionSize, timestamp, overallCalories, uid) VALUES (%s, %s, %s, %s, %s)",
                         (food_name, portion_size, timestamp, overallCalories, uid))
