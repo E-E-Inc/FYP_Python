@@ -184,7 +184,42 @@ def registeration():
         logging.error(f"Registration failed: {str(e)}")
         return jsonify({'error': 'Registration failed'}), 500
 
-# Login Endpoint
+@app.route('/update_info', methods=['POST'])
+def UpdateInfo():
+    try:
+            # Get data from the request
+            data = request.get_json()
+
+            # Get email and password
+            email = data.get('email')
+            gender = data.get('gender')
+            age = data.get('age')
+
+            # If there is no email or password entered, throw an error
+            if not email:
+                return jsonify({'error': 'Email and password are required'}), 400
+            
+            # Email validation
+            if '@' not in email or '.com' not in email:
+                return jsonify({'error': 'Invalid format for email'}), 400
+            
+            # Create cursor to interact with database
+            cursor = db.cursor()
+            cursor.execute("UPDATE Users SET sex = %s, age = %s WHERE email = %s", (gender, age, email))         
+            db.commit()
+
+            # Close connection
+            cursor.close()
+
+            return jsonify({'message': 'User registered successfully'})
+            
+
+    except Exception as e:
+            logging.error(f"Registration failed: {str(e)}")
+            return jsonify({'error': 'Registration failed'}), 500
+    
+
+# # Login Endpoint
 @app.route('/login', methods=['POST'])
 def login():
     try:
