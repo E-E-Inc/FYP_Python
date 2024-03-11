@@ -4,6 +4,7 @@ import json
 import os
 from werkzeug.utils import secure_filename
 from FoodRecognition import IdentifyFoodYolo, getCalories, getNutrientInfo
+from CalculateBMR import BMR
 import mysql.connector  # Importing MySQL connector for database interaction
 import secrets
 import logging
@@ -194,6 +195,9 @@ def UpdateInfo():
             email = data.get('email')
             gender = data.get('gender')
             age = data.get('age')
+            height = data.get('height')
+            weight = data.get('weight')
+
 
             # If there is no email or password entered, throw an error
             if not email:
@@ -202,17 +206,18 @@ def UpdateInfo():
             # Email validation
             if '@' not in email or '.com' not in email:
                 return jsonify({'error': 'Invalid format for email'}), 400
-            
+            print("here")
             # Create cursor to interact with database
             cursor = db.cursor()
-            cursor.execute("UPDATE Users SET sex = %s, age = %s WHERE email = %s", (gender, age, email))         
+            cursor.execute("UPDATE Users SET sex = %s, age = %s, weight= %s, height= %s WHERE email = %s", (gender, age, weight, height, email))         
             db.commit()
 
+            total = BMR(gender, age, height, weight)
+            print(total)
             # Close connection
             cursor.close()
-
+            print("end")
             return jsonify({'message': 'User registered successfully'})
-            
 
     except Exception as e:
             logging.error(f"Registration failed: {str(e)}")
