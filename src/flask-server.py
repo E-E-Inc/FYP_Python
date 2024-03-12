@@ -5,7 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 from FoodRecognition import IdentifyFoodYolo, getCalories, getNutrientInfo
 from CalculateBMR import BMR
-import mysql.connector  # Importing MySQL connector for database interaction
+import mysql.connector  
 import secrets
 import logging
 import hashlib
@@ -42,18 +42,12 @@ userid = None
 # Global variable to store food data 
 food_data = None
 
-# food_name = None;
-# portion = None#
-
-# Handle POST request to '/upload' endpoint for uploading an image
+# Handle POST request to '/image_upload' endpoint for uploading an image
 @app.route('/image_upload', methods=['POST'])
 def image_upload():
 
-    print(session.get('uid'))
-
     # Get the file from post request
     file = request.files['file']
-    print("File", file)
 
     if not file:
         return jsonify({'error':'no file part'})
@@ -62,24 +56,22 @@ def image_upload():
         url= f'{MICROSERVICE_URL}/upload'
         files = {'file': file}
         response = requests.post(url, files=files)
-        print(response)
 
         if response.status_code == 200:
             return jsonify(response.json())
         else:
-            print("here")
             return jsonify({'error': 'upload failed'})
 
     
     except Exception as e:
         return jsonify({'error': f'Upload failed: {str(e)}'})
 
+# Handle POST request to '/image_process' endpoint for processing an image
 @app.route('/image_process', methods=['POST'])
 def image_process():
 
     # Gets the portion size
     data = request.get_json()
-    print("in main flask /image_process > ",data)
     if not data:
         return jsonify({'error': 'No data provided'})
     
@@ -97,6 +89,7 @@ def image_process():
     except Exception as e:
         return jsonify({'error': f'processing failed: {str(e)}'})
    
+# Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
 
@@ -104,7 +97,6 @@ def image_process_manually():
 
     # Gets the portion size
     data = request.get_json()
-    print("in main flask /image_process_manually > ",data)
 
     # Extract food name and portion size from the JSON data
     food_name = data.get('foodName')
@@ -133,8 +125,7 @@ def image_process_manually():
     except Exception as e:
         return jsonify({'error': f'processing failed: {str(e)}'})
    
-
-# Registration Endpoint 
+# Handle POST request to '/register' endpoint for registering a user
 @app.route('/register', methods=['POST'])
 def registeration():
     try:
@@ -166,7 +157,6 @@ def registeration():
 
         cursor.execute("SELECT * FROM Users where email = %s", (email,))
         existing = cursor.fetchone()
-        print(existing)
 
         if existing:
             return jsonify({'error': 'Email already exists'}), 409
@@ -185,6 +175,7 @@ def registeration():
         logging.error(f"Registration failed: {str(e)}")
         return jsonify({'error': 'Registration failed'}), 500
 
+# Handle POST request to '/update_info' endpoint for adding additional user info
 @app.route('/update_info', methods=['POST'])
 def UpdateInfo():
     try:
@@ -206,25 +197,42 @@ def UpdateInfo():
             # Email validation
             if '@' not in email or '.com' not in email:
                 return jsonify({'error': 'Invalid format for email'}), 400
-            print("here")
+            
+             # Validate gender
+            gender = data.get('gender')
+            if gender not in ['male', 'female']:
+                return jsonify({'error': 'Invalid gender'}), 400
+
+            # Validate age
+            age = data.get('age')
+            if not age or not 0 < int(age) < 100:
+                return jsonify({'error': 'Invalid age'}), 400
+
+            # Validate height
+            height = data.get('height')
+            if not height or len(height) != 2 or not height.isdigit():
+                return jsonify({'error': 'Invalid height'}), 400
+
+            # Validate weight
+            weight = data.get('weight')
+            if not weight or len(weight) != 2 or not weight.isdigit():
+                return jsonify({'error': 'Invalid weight'}), 400
+
             # Create cursor to interact with database
             cursor = db.cursor()
             cursor.execute("UPDATE Users SET sex = %s, age = %s, weight= %s, height= %s WHERE email = %s", (gender, age, weight, height, email))         
             db.commit()
 
             total = BMR(gender, age, height, weight)
-            print(total)
             # Close connection
             cursor.close()
-            print("end")
             return jsonify({'message': 'User registered successfully'})
 
     except Exception as e:
             logging.error(f"Registration failed: {str(e)}")
             return jsonify({'error': 'Registration failed'}), 500
     
-
-# # Login Endpoint
+# Handle POST request to '/login' endpoint for logging in a user
 @app.route('/login', methods=['POST'])
 def login():
     try:
@@ -275,7 +283,7 @@ def login():
         print(f"Login failed: {str(e)}")
         return jsonify({'error': 'Login failed'}), 500
 
-# Information Endpoint
+# Handle GET request to '/information' endpoint for getting user information and food for a particular day
 @app.route('/information', methods=['GET'])
 def information():
     try:
@@ -304,7 +312,7 @@ def information():
         print(f"fetch failed: {str(e)}")
         return jsonify({'error': 'fetch failed'}), 500
 
-# Information Endpoint
+# Handle POST request to '/getNutrition' endpoint for getting food nutritional information
 @app.route('/getNutrition', methods=['POST'])
 def showNutritionalInfo():
     try:
