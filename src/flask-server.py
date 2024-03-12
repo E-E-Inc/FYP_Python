@@ -39,6 +39,8 @@ temp_image = None
 # Global variable for user id
 userid = None
 
+bmr = None
+
 # Global variable to store food data 
 food_data = None
 
@@ -178,6 +180,7 @@ def registeration():
 # Handle POST request to '/update_info' endpoint for adding additional user info
 @app.route('/update_info', methods=['POST'])
 def UpdateInfo():
+    global bmr
     try:
             # Get data from the request
             data = request.get_json()
@@ -218,15 +221,18 @@ def UpdateInfo():
             if not weight or len(weight) != 2 or not weight.isdigit():
                 return jsonify({'error': 'Invalid weight'}), 400
 
+            total = BMR(gender, age, height, weight)
+            bmr = total
+            print(bmr)
             # Create cursor to interact with database
             cursor = db.cursor()
-            cursor.execute("UPDATE Users SET sex = %s, age = %s, weight= %s, height= %s WHERE email = %s", (gender, age, weight, height, email))         
+            cursor.execute("UPDATE Users SET sex = %s, age = %s, weight= %s, height= %s, NeededCalories=%s WHERE email = %s", (gender, age, weight, height, total, email))         
             db.commit()
 
-            total = BMR(gender, age, height, weight)
+            
             # Close connection
             cursor.close()
-            return jsonify({'message': 'User registered successfully'})
+            return jsonify({'message': 'User registered successfully', 'total': total})
 
     except Exception as e:
             logging.error(f"Registration failed: {str(e)}")
