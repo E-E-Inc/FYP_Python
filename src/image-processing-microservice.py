@@ -119,16 +119,17 @@ def process_manually():
     
 # Method to entering food into database
 def insert_food_data(food_name, portion_size, overallCalories, uid):
+    print("In insert_food_data")
     try:
         if uid:
             cursor = db.cursor()
-
+            print("there is a user")
             # Get current timestamp
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
             # Execute SQL query to insert data into the Food table
             cursor.execute("INSERT INTO Food (foodName, portionSize, timestamp, overallCalories, uid) VALUES (%s, %s, %s, %s, %s)",
                         (food_name, portion_size, timestamp, overallCalories, uid))
-           
+            print("Inserted")
             # Commit changes
             db.commit()
 

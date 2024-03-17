@@ -192,7 +192,6 @@ def UpdateInfo():
             height = data.get('height')
             weight = data.get('weight')
 
-
             # If there is no email or password entered, throw an error
             if not email:
                 return jsonify({'error': 'Email and password are required'}), 400
@@ -213,19 +212,19 @@ def UpdateInfo():
 
             # Validate height
             height = data.get('height')
-            if not height or len(height) != 2 or not height.isdigit():
+            if not height or len(height) != 3 or not height.isdigit():
                 return jsonify({'error': 'Invalid height'}), 400
 
             # Validate weight
             weight = data.get('weight')
-            if not weight or len(weight) != 2 or not weight.isdigit():
+            if not weight or len(weight) != 3 or not weight.isdigit():
                 return jsonify({'error': 'Invalid weight'}), 400
 
             total = BMR(gender, age, height, weight)
             bmr = total
-            print(bmr)
             # Create cursor to interact with database
             cursor = db.cursor()
+          
             cursor.execute("UPDATE Users SET sex = %s, age = %s, weight= %s, height= %s, NeededCalories=%s WHERE email = %s", (gender, age, weight, height, total, email))         
             db.commit()
 
@@ -299,12 +298,13 @@ def information():
         # Create cursor to interact with database returning results as dictionaries
         cursor = db.cursor(dictionary=True)
         
-        # Execute sql query
+
+        #Execute sql query
         cursor.execute("SELECT * FROM Food WHERE uid = %s AND DATE(timestamp) = %s", (userid, selected_date))
 
         # Fetch all rows from the result set
         rows = cursor.fetchall()
-
+        
         # Close cursor
         cursor.close()
         
@@ -318,6 +318,35 @@ def information():
         print(f"fetch failed: {str(e)}")
         return jsonify({'error': 'fetch failed'}), 500
 
+@app.route('/needed_calories', methods=['GET'])
+def get_needed_calories():
+    try:
+        if not userid:
+            return jsonify({'error': 'Missing uid'}), 400
+
+        # Create a cursor to interact with the database
+        cursor = db.cursor(dictionary=True)
+
+        # Execute a SQL query to get the NeededCalories for the user with the given uid
+        cursor.execute("SELECT NeededCalories FROM Users WHERE uid = %s", (userid,))
+
+        # Fetch the first row from the result set
+        row = cursor.fetchone()
+    
+        # Close the cursor
+        cursor.close()
+
+        if row:
+            # If a row was found, return the NeededCalories
+            return jsonify(row["NeededCalories"]), 200
+        else:
+            # If no row was found, return an error
+            return jsonify({'error': 'User not found'}), 404
+
+    except Exception as e:
+        print(f"fetch failed: {str(e)}")
+        return jsonify({'error': 'fetch failed'}), 500
+    
 # Handle POST request to '/getNutrition' endpoint for getting food nutritional information
 @app.route('/getNutrition', methods=['POST'])
 def showNutritionalInfo():
