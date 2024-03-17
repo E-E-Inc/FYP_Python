@@ -212,14 +212,14 @@ def UpdateInfo():
 
             # Validate height
             height = data.get('height')
-            if not height or len(height) != 3 or not height.isdigit():
+            if not height or len(height) > 3 or not height.isdigit():
                 return jsonify({'error': 'Invalid height'}), 400
 
             # Validate weight
             weight = data.get('weight')
-            if not weight or len(weight) != 3 or not weight.isdigit():
+            if not weight or len(weight) > 3 or not weight.isdigit():
                 return jsonify({'error': 'Invalid weight'}), 400
-
+            
             total = BMR(gender, age, height, weight)
             bmr = total
             # Create cursor to interact with database
