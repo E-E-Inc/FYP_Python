@@ -12,17 +12,17 @@ import hashlib
 from dotenv import load_dotenv
 from datetime import datetime
 import requests
+from flask_cors import CORS
+
 app = Flask(__name__)
 load_dotenv()
 
-secret_key = secrets.token_hex(32) 
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 MICROSERVICE_URL = 'http://localhost:5001'  
 
-CORS(app)
+CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
-
-app.config['SECRET_KEY'] = os.urandom(24)
 
 # MySQL Connection
 db = mysql.connector.connect(
@@ -37,7 +37,7 @@ db = mysql.connector.connect(
 temp_image = None
 
 # Global variable for user id
-userid = None
+#userid = None
 
 bmr = None
 
@@ -241,11 +241,9 @@ def UpdateInfo():
 @app.route('/login', methods=['POST'])
 def login():
     try:
-        global userid
+
         # Get data from request
         data = request.get_json()
-
-        # Get email and password
         email = data.get('email')
         password = data.get('password')
 
@@ -270,14 +268,22 @@ def login():
         user = cursor.fetchone()
 
         if user:
-            userid = user["uid"]
             password_from_db = user["password"]
-
+        
             # Hash the user password
             hash_user = hashlib.sha256(password.encode()).hexdigest()
-
+ 
             if user and hash_user == password_from_db:
-                return jsonify({'message': 'User logged in successfully'})
+
+                session['uid'] = user["uid"]
+
+                print("Session: ", session['uid'])
+                print("User logged in successfully")
+
+                response = jsonify({'message': 'Logged in'})
+                response.headers['Set-Cookie'] = 'session uid =' + str(session['uid'])
+                return response
+                
             else:
                 return jsonify({'error': 'Invalid email or password'}), 401
 
@@ -292,15 +298,22 @@ def login():
 @app.route('/information', methods=['GET'])
 def information():
     try:
+        print("Session: ", session)
+        sessionuid = session.get('uid')
+        print("Session uid in /information: ", sessionuid)
+
+        if sessionuid is None:
+            return jsonify({'error': 'Not logged in'}), 401
+
         # Gets value of selected_date from frontend
         selected_date = request.args.get('selectedDate')
         
         # Create cursor to interact with database returning results as dictionaries
         cursor = db.cursor(dictionary=True)
-        
+        print("Session uid in /information: ",sessionuid)
 
         #Execute sql query
-        cursor.execute("SELECT * FROM Food WHERE uid = %s AND DATE(timestamp) = %s", (userid, selected_date))
+        cursor.execute("SELECT * FROM Food WHERE uid = %s AND DATE(timestamp) = %s", (sessionuid, selected_date))
 
         # Fetch all rows from the result set
         rows = cursor.fetchall()
