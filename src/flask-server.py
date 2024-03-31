@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
 import json
 import os
@@ -17,7 +17,17 @@ from flask_cors import CORS
 app = Flask(__name__)
 load_dotenv()
 
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+#app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
+app.config['SESSION_TYPE'] = 'filesystem'  # session type
+
+
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE='None',
+)
+
 
 MICROSERVICE_URL = 'http://localhost:5001'  
 
@@ -236,12 +246,27 @@ def UpdateInfo():
     except Exception as e:
             logging.error(f"Registration failed: {str(e)}")
             return jsonify({'error': 'Registration failed'}), 500
+
+@app.route('/')
+def home():
+    if 'uid' in session:
+        return f"Welcome back, user {session['uid']}!"
+    else:
+        return redirect(url_for('login'))
     
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    # Clear server-side session or token here if any
+    session.pop('uid', None)
+    print('Logged out')
+    # Then return a success response
+    return {"status": "success"}, 200
+
 # Handle POST request to '/login' endpoint for logging in a user
 @app.route('/login', methods=['POST'])
 def login():
     try:
-
         # Get data from request
         data = request.get_json()
         email = data.get('email')
