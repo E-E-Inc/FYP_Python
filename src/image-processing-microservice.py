@@ -1,24 +1,26 @@
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
-import json
 import os
 import mysql.connector
 from werkzeug.utils import secure_filename
-from FoodRecognition import IdentifyFoodYolo, getCalories, IdentifyFoodYoloManual
+from FoodRecognition import IdentifyFoodYolo, getCalories
 import mysql.connector
-import secrets
 import logging
-import hashlib
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from datetime import datetime
-import requests
 
 app = Flask(__name__)
 CORS(app)
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
-app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
+app.config['SESSION_TYPE'] = 'filesystem'  # session type
+
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE='None',
+)
 
 # MySQL Connection
 db = mysql.connector.connect(
@@ -67,7 +69,7 @@ def process():
         portion_Size = data.get('portionSize')
         uid = data.get('uid')
 
-        print(data)
+        print("Uid: ", uid) 
         if not filePath:
             return jsonify({'error': 'No file path provided'}), 400
 
@@ -98,8 +100,8 @@ def process_manually():
         
         food_Name = data.get('foodName')
         portion_Size = data.get('portion')
-        uid = data.get('uid')
-
+        uid = session.get('uid')
+        print("User ID: ", uid)   
         if not portion_Size:
             return jsonify({'error': 'No portion size provided'}), 400
 

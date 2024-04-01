@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify, session, redirect, url_for
+#from functools import wraps
 from flask_cors import CORS
 import json
 import os
 from werkzeug.utils import secure_filename
-from FoodRecognition import IdentifyFoodYolo, getCalories, getNutrientInfo
+from FoodRecognition import getNutrientInfo
 from CalculateBMR import BMR
 import mysql.connector  
-import secrets
+#import secrets
 import logging
 import hashlib
 from dotenv import load_dotenv
@@ -17,17 +18,13 @@ from flask_cors import CORS
 app = Flask(__name__)
 load_dotenv()
 
-#app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SESSION_TYPE'] = 'filesystem'  # session type
-
 
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
 )
-
 
 MICROSERVICE_URL = 'http://localhost:5001'  
 
@@ -43,16 +40,11 @@ db = mysql.connector.connect(
     database=os.getenv("DB_NAME")
 )
 
-# Global variable to store the image temporarily
+# Global variables
 temp_image = None
-
-# Global variable for user id
-#userid = None
-
 bmr = None
-
-# Global variable to store food data 
 food_data = None
+
 
 # Handle POST request to '/image_upload' endpoint for uploading an image
 @app.route('/image_upload', methods=['POST'])
@@ -81,14 +73,16 @@ def image_upload():
 # Handle POST request to '/image_process' endpoint for processing an image
 @app.route('/image_process', methods=['POST'])
 def image_process():
-
+    uid = session.get('uid')
     # Gets the portion size
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'})
     
+    print("Session uid in /information: ", uid)
     # Add the user ID to the data
-    data['uid'] = userid
+    data['uid'] = uid
+    print("Data: ", data)
 
     try:
         url= f'{MICROSERVICE_URL}/process'
@@ -105,8 +99,8 @@ def image_process():
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
 
-    global userid
-
+    #global userid
+    sessionuid = session.get('uid')
     # Gets the portion size
     data = request.get_json()
 
@@ -118,14 +112,14 @@ def image_process_manually():
         return jsonify({'error': 'No data provided'})
     
     # Add the user ID to the data
-    data['uid'] = userid
+    data['uid'] = sessionuid
    
     try:
         url= f'{MICROSERVICE_URL}/process_manually'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
-            'uid': userid
+            'uid': sessionuid
         }
         response = requests.post(url, json=payload)
 
@@ -253,7 +247,6 @@ def home():
         return f"Welcome back, user {session['uid']}!"
     else:
         return redirect(url_for('login'))
-    
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -359,14 +352,15 @@ def information():
 @app.route('/needed_calories', methods=['GET'])
 def get_needed_calories():
     try:
-        if not userid:
+        sessionuid = session.get('uid')
+        if not sessionuid:
             return jsonify({'error': 'Missing uid'}), 400
 
         # Create a cursor to interact with the database
         cursor = db.cursor(dictionary=True)
 
         # Execute a SQL query to get the NeededCalories for the user with the given uid
-        cursor.execute("SELECT NeededCalories FROM Users WHERE uid = %s", (userid,))
+        cursor.execute("SELECT NeededCalories FROM Users WHERE uid = %s", (sessionuid,))
 
         # Fetch the first row from the result set
         row = cursor.fetchone()
@@ -404,6 +398,8 @@ def showNutritionalInfo():
     except Exception as e:
         print(f"fetch failed: {str(e)}")
         return jsonify({'error': 'fetch failed'}), 500
+
+
 
 # Run the server in debug mode - 'python flask-server.py'
 if __name__ == '__main__':
