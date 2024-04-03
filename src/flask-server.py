@@ -298,7 +298,8 @@ def login():
                 print("Session: ", session['uid'])
                 print("User logged in successfully")
 
-                response = jsonify({'message': 'Logged in'})
+                response = jsonify({'message': 'Logged in', 'uid': str(session['uid'])})
+
                 response.headers['Set-Cookie'] = 'session uid =' + str(session['uid'])
                 return response
                 
