@@ -19,9 +19,9 @@ from flask import g
 app = Flask(__name__)
 load_dotenv()
 
+# Session configuration
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SESSION_TYPE'] = 'filesystem'  # session type
-
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
@@ -91,15 +91,12 @@ def image_upload():
 @app.route('/image_process', methods=['POST'])
 def image_process():
     uid = session.get('uid')
-    # Gets the portion size
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'})
     
-    print("Session uid in /information: ", uid)
     # Add the user ID to the data
     data['uid'] = uid
-    print("Data: ", data)
 
     try:
         url= f'{MICROSERVICE_URL}/process'
@@ -116,9 +113,7 @@ def image_process():
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
 
-    #global userid
     uid = session.get('uid')
-    # Gets the portion size
     data = request.get_json()
 
     # Extract food name and portion size from the JSON data
@@ -301,7 +296,6 @@ def login():
 
         # Fetch the first row from the result set
         user = cursor.fetchone()
-        print("User: ", user)
         if user:
             password_from_db = user["password"]
         
@@ -309,14 +303,8 @@ def login():
             hash_user = hashlib.sha256(password.encode()).hexdigest()
  
             if user and hash_user == password_from_db:
-
                 session['uid'] = user["uid"]
-
-                print("Session: ", session['uid'])
-                print("User logged in successfully")
-
                 response = jsonify({'message': 'Logged in', 'uid': str(session['uid'])})
-
                 response.headers['Set-Cookie'] = 'session uid =' + str(session['uid'])
                 return response
                 
@@ -334,9 +322,7 @@ def login():
 @app.route('/information', methods=['GET'])
 def information():
     try:
-        # print("Session: ", session)
         sessionuid = session.get('uid')
-        print("Session uid in /information: ", sessionuid)
 
         if sessionuid is None:
             return jsonify({'error': 'Not logged in'}), 401
@@ -346,14 +332,13 @@ def information():
         
         # Create cursor to interact with database returning results as dictionaries
         cursor = g.db.cursor(dictionary=True)
-        # print("Session uid in /information: ",sessionuid)
-
+      
         #Execute sql query
         cursor.execute("SELECT * FROM Food WHERE uid = %s AND DATE(timestamp) = %s", (sessionuid, selected_date))
 
         # Fetch all rows from the result set
         rows = cursor.fetchall()
-        # print("Rows: ", rows)
+       
         # Close cursor
         cursor.close()
         
@@ -370,9 +355,7 @@ def information():
 @app.route('/needed_calories', methods=['GET'])
 def get_needed_calories():
     try:
-        
         uidcals = session.get('uid')
-        print("Session uid in /needed_calories: ", session.get('uid'))
         if not uidcals:
             return jsonify({'error': 'Missing uid'}), 400
 
@@ -384,7 +367,7 @@ def get_needed_calories():
 
         # Fetch the first row from the result set
         row = cursor.fetchone()
-        print("Row: ", row)
+
         # Close the cursor
         cursor.close()
 

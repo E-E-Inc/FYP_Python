@@ -59,17 +59,13 @@ def upload():
 # Handle POST request to '/process' endpoint for processing an image
 @app.route('/process', methods=['POST'])
 def process():
-    print("Here girlie")
     try:
-        print("In /process microservice")
-       
         # Gets the portion size
         data = request.get_json()
         filePath = data.get('filePath')
         portion_Size = data.get('portionSize')
         uid = data.get('uid')
 
-        print("Uid: ", uid) 
         if not filePath:
             return jsonify({'error': 'No file path provided'}), 400
 
@@ -102,16 +98,12 @@ def process_manually():
         portion_Size = data.get('portion')
         uid = data.get('uid')
 
-        print("User ID in microservice: ", uid)   
-        print("Food Name: ", food_Name)
-        print("Portion Size: ", portion_Size)
-        
         if not portion_Size:
             return jsonify({'error': 'No portion size provided'}), 400
 
         # Call the functions to get calories
         calories = getCalories.Calories(food_Name, portion_Size)
-        print("Calories: ", calories)
+      
         # Insert data into the database
         insert_food_data(food_Name, portion_Size, calories, uid)
         return jsonify({
@@ -125,11 +117,10 @@ def process_manually():
     
 # Method to entering food into database
 def insert_food_data(food_name, portion_size, overallCalories, uid):
-    print("In insert_food_data")
     try:
         if uid:
             cursor = db.cursor()
-            print("there is a user")
+           
             # Get current timestamp
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
             # Execute SQL query to insert data into the Food table
