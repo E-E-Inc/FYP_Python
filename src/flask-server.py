@@ -100,7 +100,7 @@ def image_process():
 def image_process_manually():
 
     #global userid
-    sessionuid = session.get('uid')
+    uid = session.get('uid')
     # Gets the portion size
     data = request.get_json()
 
@@ -112,14 +112,14 @@ def image_process_manually():
         return jsonify({'error': 'No data provided'})
     
     # Add the user ID to the data
-    data['uid'] = sessionuid
+    data['uid'] = uid
    
     try:
         url= f'{MICROSERVICE_URL}/process_manually'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
-            'uid': sessionuid
+            'uid': uid
         }
         response = requests.post(url, json=payload)
 

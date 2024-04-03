@@ -100,14 +100,18 @@ def process_manually():
         
         food_Name = data.get('foodName')
         portion_Size = data.get('portion')
-        uid = session.get('uid')
-        print("User ID: ", uid)   
+        uid = data.get('uid')
+
+        print("User ID in microservice: ", uid)   
+        print("Food Name: ", food_Name)
+        print("Portion Size: ", portion_Size)
+        
         if not portion_Size:
             return jsonify({'error': 'No portion size provided'}), 400
 
         # Call the functions to get calories
         calories = getCalories.Calories(food_Name, portion_Size)
-       
+        print("Calories: ", calories)
         # Insert data into the database
         insert_food_data(food_Name, portion_Size, calories, uid)
         return jsonify({
