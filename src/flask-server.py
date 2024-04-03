@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 import requests
 from flask_cors import CORS
+from flask import g
 
 app = Flask(__name__)
 load_dotenv()
@@ -44,6 +45,22 @@ db = mysql.connector.connect(
 temp_image = None
 bmr = None
 food_data = None
+
+@app.before_request
+def before_request():
+    g.db = mysql.connector.connect(
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"), 
+    user=os.getenv("DB_USER"),  
+    password=os.getenv("DB_PASSWORD"), 
+    database=os.getenv("DB_NAME")
+)
+
+@app.teardown_request
+def teardown_request(exception):
+    db = getattr(g, 'db', None)
+    if db is not None:
+        db.close()
 
 
 # Handle POST request to '/image_upload' endpoint for uploading an image
@@ -328,7 +345,7 @@ def information():
         selected_date = request.args.get('selectedDate')
         
         # Create cursor to interact with database returning results as dictionaries
-        cursor = db.cursor(dictionary=True)
+        cursor = g.db.cursor(dictionary=True)
         print("Session uid in /information: ",sessionuid)
 
         #Execute sql query
@@ -336,7 +353,7 @@ def information():
 
         # Fetch all rows from the result set
         rows = cursor.fetchall()
-        
+        print("Rows: ", rows)
         # Close cursor
         cursor.close()
         
