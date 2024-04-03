@@ -301,7 +301,7 @@ def login():
 
         # Fetch the first row from the result set
         user = cursor.fetchone()
-
+        print("User: ", user)
         if user:
             password_from_db = user["password"]
         
@@ -334,7 +334,7 @@ def login():
 @app.route('/information', methods=['GET'])
 def information():
     try:
-        print("Session: ", session)
+        # print("Session: ", session)
         sessionuid = session.get('uid')
         print("Session uid in /information: ", sessionuid)
 
@@ -346,14 +346,14 @@ def information():
         
         # Create cursor to interact with database returning results as dictionaries
         cursor = g.db.cursor(dictionary=True)
-        print("Session uid in /information: ",sessionuid)
+        # print("Session uid in /information: ",sessionuid)
 
         #Execute sql query
         cursor.execute("SELECT * FROM Food WHERE uid = %s AND DATE(timestamp) = %s", (sessionuid, selected_date))
 
         # Fetch all rows from the result set
         rows = cursor.fetchall()
-        print("Rows: ", rows)
+        # print("Rows: ", rows)
         # Close cursor
         cursor.close()
         
@@ -370,19 +370,21 @@ def information():
 @app.route('/needed_calories', methods=['GET'])
 def get_needed_calories():
     try:
-        sessionuid = session.get('uid')
-        if not sessionuid:
+        
+        uidcals = session.get('uid')
+        print("Session uid in /needed_calories: ", session.get('uid'))
+        if not uidcals:
             return jsonify({'error': 'Missing uid'}), 400
 
         # Create a cursor to interact with the database
         cursor = db.cursor(dictionary=True)
 
         # Execute a SQL query to get the NeededCalories for the user with the given uid
-        cursor.execute("SELECT NeededCalories FROM Users WHERE uid = %s", (sessionuid,))
+        cursor.execute("SELECT NeededCalories FROM Users WHERE uid = %s", (uidcals,))
 
         # Fetch the first row from the result set
         row = cursor.fetchone()
-    
+        print("Row: ", row)
         # Close the cursor
         cursor.close()
 
