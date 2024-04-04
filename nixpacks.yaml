@@ -6,4 +6,4 @@ install:
   - python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install -r requirements.txt
 
 start:
-  - myvenv/bin/activate && python ./src/flask-server.py
+  - . /opt/venv/bin/activate && python ./src/main.py & python ./src/microservice.py
