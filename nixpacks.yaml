@@ -3,7 +3,7 @@ setup:
   - gcc
 
 install:
-  - python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install -r requirements.txt
+  - python -m venv myenv && myenv\Scripts\activate && pip install -r requirements.txt
 
 start:
-  - . /opt/venv/bin/activate && python ./src/main.py & python ./src/microservice.py
+  - myenv\Scripts\activate && python ./src/main.py & python ./src/microservice.py
