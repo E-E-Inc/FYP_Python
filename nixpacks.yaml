@@ -1,9 +1,0 @@
-setup:
-  - python38
-  - gcc
-
-install:
-  - python -m venv myenv && myenv\Scripts\activate && pip install -r requirements.txt
-
-start:
-  - myenv\Scripts\activate && python ./src/flask-server.py & python ./src/image-processing-microservice.py
