@@ -7,14 +7,10 @@ WORKDIR /FYP_Python
 # Copy the current directory contents into the container at /app
 COPY . /FYP_Python
 
-# Install Flask
-RUN pip install flask
-
-# Create a virtual environment and install dependencies
+# Install Flask and create a virtual environment, then install dependencies
 RUN python -m venv myenv && \
-    /bin/bash -c "source myenv/bin/activate" && \
-    pip install --no-cache-dir -r requirements.txt
-
+    /bin/bash -c "source myenv/bin/activate && pip install flask && pip install --no-cache-dir -r requirements.txt"
+    
 # Expose any needed ports
 EXPOSE 5000
 
