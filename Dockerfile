@@ -9,11 +9,9 @@ COPY . /FYP_Python
 
 # Create and activate virtual environment
 RUN python -m venv myenv
-SHELL ["bash", "-c"]
-RUN myenv/bin/activate
+SHELL ["/bin/bash", "-c"]
+RUN source myenv/bin/activate && pip install --no-cache-dir -r requirements.txt
 
-# Install project dependencies
-RUN pip install -r requirements.txt
 
 # Expose any needed ports
 EXPOSE 5000
