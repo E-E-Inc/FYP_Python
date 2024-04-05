@@ -7,15 +7,13 @@ WORKDIR /fyp-python
 # Copy the current directory contents into the container at /usr/src/app
 COPY . .
 
-# Create and activate a virtual environment
-RUN python -m venv myenv
-RUN . myenv/bin/activate
-
-# Install project dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Create a virtual environment and install dependencies
+RUN python -m venv myenv && \
+    . myenv/bin/activate && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Expose the Flask port
 EXPOSE 5000
 
 # Start both services
-CMD ["sh", "-c", "python ./src/flask-server.py & python ./src/image-processing-microservice.py"]
+CMD ["sh", "-c", "source myenv/bin/activate && python ./src/flask-server.py & python ./src/image-processing-microservice.py"]
