@@ -7,6 +7,8 @@ from FoodRecognition import IdentifyFoodYolo, getCalories
 import mysql.connector
 import logging
 import os
+import mysql.connector
+from mysql.connector import Error
 
 # from dotenv import load_dotenv
 from datetime import datetime
@@ -24,14 +26,21 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
 )
 
-# MySQL Connection
-db = mysql.connector.connect(
-    host=os.getenv("DB_HOST"),
-    port=int(os.getenv("DB_PORT")), 
-    user=os.getenv("DB_USER"),  
-    password=os.getenv("DB_PASSWORD"), 
-    database=os.getenv("DB_NAME")
-)
+try:
+    connection = mysql.connector.connect(host='localhost',
+                                         database='your_database',
+                                         user='your_username',
+                                         password='your_password')
+    if connection.is_connected():
+        db_Info = connection.get_server_info()
+        print("Connected to MySQL Server version ", db_Info)
+
+except Error as e:
+    print("Error while connecting to MySQL", e)
+finally:
+    if (connection.is_connected()):
+        connection.close()
+        print("MySQL connection is closed")
 
 app.config['IMAGES_DIR'] = IMAGES_DIR
 
