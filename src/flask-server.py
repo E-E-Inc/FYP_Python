@@ -16,8 +16,6 @@ import requests
 from flask_cors import CORS
 from flask import g
 import os
-import mysql.connector
-from mysql.connector import Error
 
 app = Flask(__name__)
 load_dotenv()
@@ -35,23 +33,15 @@ MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'
 CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
+# MySQL Connection
+db = mysql.connector.connect(
+    host=os.getenv("DB_HOST"),
+    port=int(os.getenv("DB_PORT")), 
+    user=os.getenv("DB_USER"),  
+    password=os.getenv("DB_PASSWORD"), 
+    database=os.getenv("DB_NAME")
+)
 
-try:
-    connection = mysql.connector.connect(host='localhost',
-                                         database='your_database',
-                                         user='your_username',
-                                         password='your_password')
-    if connection.is_connected():
-        db_Info = connection.get_server_info()
-        print("Connected to MySQL Server version ", db_Info)
-
-except Error as e:
-    print("Error while connecting to MySQL", e)
-finally:
-    if (connection.is_connected()):
-        connection.close()
-        print("MySQL connection is closed")
-        
 # Global variables
 temp_image = None
 bmr = None
