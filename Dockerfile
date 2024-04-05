@@ -17,4 +17,5 @@ RUN source myenv/bin/activate && pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Command to start the server
-CMD ["python", "./src/flask-server.py"]
+#CMD ["python", "./src/flask-server.py"]
+CMD ["bash", "-c", "python ./src/flask-server.py && python ./src/image-processing-microservice.py"]
