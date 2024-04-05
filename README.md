@@ -11,7 +11,5 @@ To run this project, we recommend creating a Python virtual environment and inst
 ### Start the server
 `python .\src\flask-server.py`
 
-###  run the python code 
-#### print calorie information
-`python .\src\FoodRecognition\getCalories.py`
-
+### Start the microservice
+`python ./src/image-processing-microservice.py`
