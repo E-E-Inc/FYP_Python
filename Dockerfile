@@ -7,15 +7,16 @@ WORKDIR /FYP_Python
 # Copy the current directory contents into the container at /app
 COPY . /FYP_Python
 
-# Create and activate virtual environment
-RUN python -m venv myenv
-SHELL ["/bin/bash", "-c"]
-RUN source myenv/bin/activate && pip install --no-cache-dir -r requirements.txt
-
+# Create a virtual environment and install dependencies
+RUN python -m venv myenv && \
+    /bin/bash -c "source myenv/bin/activate" && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Expose any needed ports
 EXPOSE 5000
 
 # Command to start the server
 #CMD ["python", "./src/flask-server.py"]
-CMD ["bash", "-c", "python ./src/flask-server.py && python ./src/image-processing-microservice.py"]
+#CMD ["bash", "-c", "python ./src/flask-server.py && python ./src/image-processing-microservice.py"]
+# Run the command to start your application
+CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py && python ./src/image-processing-microservice.py"]
