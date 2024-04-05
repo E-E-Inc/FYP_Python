@@ -6,6 +6,8 @@ from werkzeug.utils import secure_filename
 from FoodRecognition import IdentifyFoodYolo, getCalories
 import mysql.connector
 import logging
+import os
+
 # from dotenv import load_dotenv
 from datetime import datetime
 
@@ -142,4 +144,4 @@ def insert_food_data(food_name, portion_size, overallCalories, uid):
         logging.error(f"Failed to insert food data: {str(e)}")
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5001)))
