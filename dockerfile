@@ -1,5 +1,5 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9
+# Use an official Nix image as a parent image
+FROM nixos/nix
 
 # Set the working directory in the container
 WORKDIR /fyp-python
@@ -8,9 +8,9 @@ WORKDIR /fyp-python
 COPY . .
 
 # Create a virtual environment and install dependencies
-RUN python -m venv myenv && \
+RUN nix-shell -p python38 gcc --run "python -m venv myenv && \
     . myenv/bin/activate && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt"
 
 # Expose the Flask port
 EXPOSE 5000
