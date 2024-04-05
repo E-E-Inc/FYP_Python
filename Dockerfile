@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11.5-slim
+FROM python:3.10-slim
 
 # Set the working directory in the container
 WORKDIR /FYP_Python
@@ -15,8 +15,5 @@ RUN python -m venv myenv && \
 # Expose any needed ports
 EXPOSE 5000
 
-# Command to start the server
-#CMD ["python", "./src/flask-server.py"]
-#CMD ["bash", "-c", "python ./src/flask-server.py && python ./src/image-processing-microservice.py"]
 # Run the command to start your application
 CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py && python ./src/image-processing-microservice.py"]
