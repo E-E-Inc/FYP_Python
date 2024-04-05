@@ -16,4 +16,4 @@ RUN python -m venv myenv && \
 EXPOSE 5000
 
 # Start both services
-CMD ["sh", "-c", "source myenv/bin/activate && python ./src/flask-server.py & python ./src/image-processing-microservice.py"]
+CMD ["sh", "-c", "myenv/bin/activate && python ./src/flask-server.py & python ./src/image-processing-microservice.py"]
