@@ -28,7 +28,7 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
 )
 
-MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
+MICROSERVICE_URL = 'https://fyppython-production.up.railway.app/'  
 
 CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
@@ -127,7 +127,7 @@ def image_process_manually():
     data['uid'] = uid
    
     try:
-        url= f'{MICROSERVICE_URL}/process_manually'
+        url= f'{MICROSERVICE_URL}process_manually'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
