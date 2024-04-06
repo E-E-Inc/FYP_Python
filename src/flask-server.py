@@ -63,7 +63,6 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-
 # Handle POST request to '/image_upload' endpoint for uploading an image
 @app.route('/image_upload', methods=['POST'])
 def image_upload():

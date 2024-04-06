@@ -95,11 +95,14 @@ def process_manually():
     try:       
         # Gets the portion size
         data = request.get_json()
-        
+        print(data)
+
         food_Name = data.get('foodName')
         portion_Size = data.get('portion')
-        uid = data.get('uid')
 
+        uid = data.get('uid')
+        print("uid in /process_manually: ", uid)
+        
         if not portion_Size:
             return jsonify({'error': 'No portion size provided'}), 400
 
@@ -119,10 +122,11 @@ def process_manually():
     
 # Method to entering food into database
 def insert_food_data(food_name, portion_size, overallCalories, uid):
+    print("in Insert food data")
     try:
         if uid:
             cursor = db.cursor()
-           
+            print("User ID in insert_food_data: ", uid)
             # Get current timestamp
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
             # Execute SQL query to insert data into the Food table
