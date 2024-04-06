@@ -128,7 +128,7 @@ def image_process_manually():
     data['uid'] = uid
    
     try:
-        url= f'{MICROSERVICE_URL}process_manually'
+        url= f'{MICROSERVICE_URL}/process_manually'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
