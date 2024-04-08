@@ -12,7 +12,6 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
@@ -23,6 +22,8 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
 )
+
+CORS(app, supports_credentials=True)
 
 # MySQL Connection
 db = mysql.connector.connect(
