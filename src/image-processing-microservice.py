@@ -89,6 +89,10 @@ def process():
     except Exception as e:
             return jsonify({'error': f'Error processing image: {str(e)}'}), 500
     
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({'status': 'Microservice is running'})
+
 # Handle POST request to '/process_manually' endpoint for processing an image manually
 @app.route('/process_manually', methods=['POST'])
 def process_manually():

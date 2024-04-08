@@ -109,6 +109,16 @@ def image_process():
     except Exception as e:
         return jsonify({'error': f'processing failed: {str(e)}'})
    
+@app.route('/test_connection', methods=['GET'])
+def test_connection():
+    url = f'{MICROSERVICE_URL}/test'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        return jsonify({'status': 'Connection successful'})
+    else:
+        return jsonify({'status': 'Connection failed', 'error': response.status_code})
+
 # Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
