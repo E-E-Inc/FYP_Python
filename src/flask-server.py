@@ -116,7 +116,7 @@ def image_process_manually():
     uid = session.get('uid')
     print("uid in /image_process_manually: ", uid)
     data = request.get_json()
-
+    print("UID line 116", uid)
     # Extract food name and portion size from the JSON data
     food_name = data.get('foodName')
     portion_size = data.get('portion')
@@ -126,7 +126,7 @@ def image_process_manually():
     
     # Add the user ID to the data
     data['uid'] = uid
-   
+    print("data in /image_process_manually: ", data['uid']	)
     try:
         url= f'{MICROSERVICE_URL}/process_manually'
         payload = {
