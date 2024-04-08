@@ -12,7 +12,7 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
