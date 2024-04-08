@@ -124,8 +124,8 @@ def image_process_manually():
         return jsonify({'error': 'No data provided'})
     
     # Add the user ID to the data
-    #data['uid'] = uid
-   
+    data['uid'] = uid
+    print(data['uid'])
     try:
         url= f'{MICROSERVICE_URL}/process_manually'
         payload = {
@@ -136,6 +136,7 @@ def image_process_manually():
         response = requests.post(url, json=payload)
 
         if response.status_code == 200:
+            print("response.json(): ", response.json())
             return jsonify(response.json())
         else:
             return jsonify({'error': 'processing failed'})
