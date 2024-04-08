@@ -17,7 +17,6 @@ IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SESSION_TYPE'] = 'filesystem'  # session type
-
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
