@@ -28,7 +28,7 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
 )
 
-MICROSERVICE_URL = 'fyppython-production-2f5a.up.railway.app'  
+MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 
 CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
