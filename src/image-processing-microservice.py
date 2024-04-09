@@ -153,6 +153,4 @@ def insert_food_data(food_name, portion_size, overallCalories, uid):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5001)))
-
-
-    # "processing failed: HTTPSConnectionPool(host='fyppython-production.up.railway.appprocess_manually', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x7f0a20ab33d0>: Failed to resolve 'fyppython-production.up.railway.appprocess_manually' ([Errno -2] Name or service not known)\"))"
+ 
