@@ -110,15 +110,17 @@ def image_process():
         return jsonify({'error': f'processing failed: {str(e)}'})
    
 @app.route('/test_connection', methods=['GET'])
-def test_connection():
-    url = f'{MICROSERVICE_URL}/test'
-    response = requests.get(url)
+def test_microservice_connection():
+    try:
+        # Replace 'microservice_url' with the URL of your microservice
+        response = requests.get(MICROSERVICE_URL)
 
-    if response.status_code == 200:
-        return jsonify({'status': 'Connection successful'})
-    else:
-        return jsonify({'status': 'Connection failed', 'error': response.status_code})
-
+        if response.status_code == 200:
+            return jsonify({'status': 'Connection successful'})
+        else:
+            return jsonify({'status': 'Connection failed', 'error': response.status_code})
+    except Exception as e:
+        return jsonify({'status': 'Connection failed', 'error': str(e)})
 # Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
