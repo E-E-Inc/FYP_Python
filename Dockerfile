@@ -13,6 +13,7 @@ RUN python -m venv myenv && \
 
 # Expose any needed ports
 EXPOSE 5000
+EXPOSE 5001
 
 ENV DB_PORT=3306
 
