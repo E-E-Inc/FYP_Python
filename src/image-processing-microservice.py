@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import mysql.connector
@@ -8,12 +8,11 @@ import mysql.connector
 import logging
 import os
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from datetime import datetime
 
 app = Flask(__name__)
-
-IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
+load_dotenv()
 
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SESSION_TYPE'] = 'filesystem'  # session type
@@ -23,6 +22,7 @@ app.config.update(
 )
 
 CORS(app, supports_credentials=True)
+IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 # MySQL Connection
 db = mysql.connector.connect(
