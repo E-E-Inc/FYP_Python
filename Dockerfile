@@ -1,21 +1,15 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-# Install OpenGL libraries
-RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    && rm -rf /var/lib/apt/lists/*
-
 # Set the working directory in the container
 WORKDIR /FYP_Python
 
 # Copy the current directory contents into the container at /FYP_Python
 COPY . /FYP_Python
 
-# Install Flask and create a virtual environment, then install dependencies
+# Create a virtual environment and install Flask and other dependencies
 RUN python -m venv myenv && \
-    /FYP_Python/myenv/bin/pip install flask && \
-    /FYP_Python/myenv/bin/pip install --no-cache-dir -r /FYP_Python/requirements.txt
+    /bin/bash -c "source myenv/bin/activate && pip install flask && pip install --no-cache-dir -r /FYP_Python/requirements.txt"
 
 # Expose any needed ports
 EXPOSE 5000
