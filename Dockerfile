@@ -16,4 +16,5 @@ EXPOSE 5000
 EXPOSE 5001
 
 # Run the command to start your application
-CMD ["/bin/bash", "/FYP_Python/start.sh"]
+#CMD ["/bin/bash", "/FYP_Python/start.sh"]
+CMD ["/bin/bash", "-c", "source myenv/bin/activate && /FYP_Python/start.sh"]
