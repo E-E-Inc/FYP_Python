@@ -152,5 +152,5 @@ def insert_food_data(food_name, portion_size, overallCalories, uid):
         logging.error(f"Failed to insert food data: {str(e)}")
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 4000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT2', 4000)))
  
