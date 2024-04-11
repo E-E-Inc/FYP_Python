@@ -64,6 +64,14 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
+@app.after_request
+def after_request(response):
+    header = response.headers
+    header['Access-Control-Allow-Origin'] = '*'
+    header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    header['Access-Control-Allow-Methods'] = 'OPTIONS, GET, POST, PUT, DELETE'
+    return response
+
 # Handle POST request to '/image_upload' endpoint for uploading an image
 @app.route('/image_upload', methods=['POST'])
 def image_upload():
