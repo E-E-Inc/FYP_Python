@@ -31,7 +31,7 @@ app.config.update(
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app' 
 MAIN_URL = 'https://foodlogix.up.railway.app' 
 
-CORS(app, supports_credentials=True, origins=[MICROSERVICE_URL, MAIN_URL])
+CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 # MySQL Connection
