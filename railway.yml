@@ -1,10 +1,10 @@
 services:
   flask_server:
     env:
-      - PORT1: 5001
-    command: python app1.py
+      - PORT1: 3000
+    command: python src\flask-server.py
 
   image_processing_microservice:
     env:
-      - PORT2: 5002
-    command: python app2.py
+      - PORT2: 4000
+    command: python src\image-processing-microservice.py
