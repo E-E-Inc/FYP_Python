@@ -15,6 +15,8 @@ from datetime import datetime
 import requests
 from flask_cors import CORS
 from flask import g
+from flask_cors import cross_origin
+
 import os
 
 app = Flask(__name__)
@@ -284,6 +286,7 @@ def home():
         return redirect(url_for('login'))
 
 @app.route('/logout', methods=['POST'])
+@cross_origin(origins=["https://foodlogix.up.railway.app", "https://fyppython-production.up.railway.app"])
 def logout():
     # Clear server-side session or token here if any
     session.pop('uid', None)
