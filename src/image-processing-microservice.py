@@ -151,6 +151,6 @@ def insert_food_data(food_name, portion_size, overallCalories, uid):
     except Exception as e:
         logging.error(f"Failed to insert food data: {str(e)}")
 
-# if __name__ == '__main__':
+if __name__ == '__microservice_':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5001)))
  
