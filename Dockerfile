@@ -11,10 +11,12 @@ COPY . /FYP_Python
 RUN python -m venv myenv && \
     /bin/bash -c "source myenv/bin/activate && pip install flask && pip install --no-cache-dir -r /FYP_Python/requirements.txt"
 
+# Change the permissions of the start.sh script to make it executable
+RUN chmod +x /FYP_Python/start.sh
+
 # Expose any needed ports
 EXPOSE 5000
 EXPOSE 5001
 
 # Run the command to start your application
-#CMD ["/bin/bash", "/FYP_Python/start.sh"]
 CMD ["/bin/bash", "-c", "source myenv/bin/activate && /FYP_Python/start.sh"]
