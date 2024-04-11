@@ -22,8 +22,8 @@ RUN python -m venv myenv && \
 RUN chmod +x /FYP_Python/start.sh
 
 # Expose any needed ports
-EXPOSE 5001
-EXPOSE 5002
+EXPOSE 3000
+EXPOSE 4000
 
 # Run the command to start your application
 CMD ["/bin/bash", "-c", "source myenv/bin/activate && /FYP_Python/start.sh"]

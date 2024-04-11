@@ -1,0 +1,8 @@
+services:
+  flask-service-1:
+    port: 3000
+    command: python src\image-processing-microservice.py
+
+  flask-service-2:
+    port: 4000
+    command: python src\flask-server.py
