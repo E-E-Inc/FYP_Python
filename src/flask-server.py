@@ -18,6 +18,8 @@ from flask import g
 import os
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": ["https://foodlogix.up.railway.app", "https://fyppython-production.up.railway.app"]}})
+
 load_dotenv()
 
 # Session configuration
@@ -31,7 +33,6 @@ app.config.update(
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app' 
 
 # CORS(app, supports_credentials=True)
-CORS(app, resources={r"/*": {"origins": ["https://foodlogix.up.railway.app", "https://fyppython-production.up.railway.app"]}})
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 # MySQL Connection
