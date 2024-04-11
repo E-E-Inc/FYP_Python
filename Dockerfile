@@ -5,7 +5,11 @@ FROM python:3.10-slim
 WORKDIR /FYP_Python
 
 # Install required libraries
-RUN apt-get update && apt-get install -y libglib2.0-0
+RUN apt-get update && apt-get install -y libglib2.0-0 libgl1-mesa-glx
+
+RUN apt-get update \
+    && apt-get install -y libglib2.0-0 libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy the current directory contents into the container at /FYP_Python
 COPY . /FYP_Python
