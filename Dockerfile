@@ -15,5 +15,9 @@ RUN python -m venv myenv && \
 EXPOSE 5000
 EXPOSE 5001
 
-# Run the command to start your application
-CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py && python ./src/image-processing-microservice.py"]
+# Add a shell script to start your services
+COPY start-services.sh /FYP_Python/start-services.sh
+RUN chmod +x /FYP_Python/start-services.sh
+
+# Run the shell script to start your services
+CMD ["/FYP_Python/start-services.sh"]
