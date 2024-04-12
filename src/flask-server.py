@@ -25,7 +25,7 @@ app = Flask(__name__)
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app' 
 MAIN_URL = 'https://foodlogix.up.railway.app'
 
-CORS(app, supports_credentials=True,  resources={r"/*": {"origins": "*"}})
+CORS(app, supports_credentials=True,  resources={r"/login": {"origins": MAIN_URL}})
 
 #CORS(app, resources={r"/*": {"origins": "*"}})
 
