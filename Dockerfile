@@ -4,13 +4,6 @@ FROM python:3.10-slim
 # Set the working directory in the container
 WORKDIR /FYP_Python
 
-# Install required libraries
-RUN apt-get update && apt-get install -y libglib2.0-0 libgl1-mesa-glx
-
-RUN apt-get update \
-    && apt-get install -y libglib2.0-0 libgl1-mesa-glx \
-    && rm -rf /var/lib/apt/lists/*
-
 # Copy the current directory contents into the container at /FYP_Python
 COPY . /FYP_Python
 
@@ -22,8 +15,8 @@ RUN python -m venv myenv && \
 RUN chmod +x /FYP_Python/start.sh
 
 # Expose any needed ports
-EXPOSE 3000
-EXPOSE 4000
+EXPOSE 5000
+EXPOSE 5001
 
 # Run the command to start your application
 CMD ["/bin/bash", "-c", "source myenv/bin/activate && /FYP_Python/start.sh"]

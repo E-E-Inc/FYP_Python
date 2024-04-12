@@ -15,20 +15,9 @@ from datetime import datetime
 import requests
 from flask_cors import CORS
 from flask import g
-from flask_cors import cross_origin
-from flask import make_response
-
 import os
 
 app = Flask(__name__)
-
-MICROSERVICE_URL = 'https://fyppython-production.up.railway.app' 
-MAIN_URL = 'https://foodlogix.up.railway.app'
-
-CORS(app, supports_credentials=True,  resources={r"/login": {"origins": MAIN_URL}})
-
-#CORS(app, resources={r"/*": {"origins": "*"}})
-
 load_dotenv()
 
 # Session configuration
@@ -39,8 +28,9 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
 )
 
+MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 
-# CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 # MySQL Connection
@@ -283,14 +273,6 @@ def home():
     else:
         return redirect(url_for('login'))
 
-@app.route('/logout', methods=['OPTIONS'])
-def logout_options():
-    response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "https://foodlogix.up.railway.app")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-    response.headers.add("Access-Control-Allow-Methods", "OPTIONS, POST")
-    return response
-
 @app.route('/logout', methods=['POST'])
 def logout():
     # Clear server-side session or token here if any
@@ -434,4 +416,4 @@ def showNutritionalInfo():
         return jsonify({'error': 'fetch failed'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT1', 3000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
