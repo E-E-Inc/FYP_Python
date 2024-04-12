@@ -16,6 +16,7 @@ import requests
 from flask_cors import CORS
 from flask import g
 from flask_cors import cross_origin
+from flask import make_response
 
 import os
 
@@ -288,8 +289,15 @@ def home():
     else:
         return redirect(url_for('login'))
 
+@app.route('/logout', methods=['OPTIONS'])
+def logout_options():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "https://foodlogix.up.railway.app")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "OPTIONS, POST")
+    return response
+
 @app.route('/logout', methods=['POST'])
-@cross_origin(origins=["https://foodlogix.up.railway.app", "https://fyppython-production.up.railway.app"])
 def logout():
     # Clear server-side session or token here if any
     session.pop('uid', None)
