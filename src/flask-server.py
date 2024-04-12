@@ -25,7 +25,9 @@ app = Flask(__name__)
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app' 
 MAIN_URL = 'https://foodlogix.up.railway.app'
 
-CORS(app, supports_credentials=True, origins=[MICROSERVICE_URL, MAIN_URL])
+CORS(app, supports_credentials=True,  resources={r"/*": {"origins": "*"}})
+
+#CORS(app, resources={r"/*": {"origins": "*"}})
 
 load_dotenv()
 
@@ -70,14 +72,6 @@ def teardown_request(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
-
-@app.after_request
-def after_request(response):
-    header = response.headers
-    header['Access-Control-Allow-Origin'] = '*'
-    header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-    header['Access-Control-Allow-Methods'] = 'OPTIONS, GET, POST, PUT, DELETE'
-    return response
 
 # Handle POST request to '/image_upload' endpoint for uploading an image
 @app.route('/image_upload', methods=['POST'])
