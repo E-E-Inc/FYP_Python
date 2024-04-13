@@ -15,6 +15,10 @@ app = Flask(__name__)
 # CORS(app, supports_credentials=True)
 CORS(app, resources={r"/*": {"origins": "https://foodlogix.up.railway.app"}}, supports_credentials=True)
 
+app.logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+app.logger.addHandler(handler)
+
 load_dotenv()
 
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
