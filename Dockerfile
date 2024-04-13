@@ -4,9 +4,11 @@ FROM python:3.10-slim
 # Set the working directory in the container
 WORKDIR /FYP_Python
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx
-    
+    libgl1-mesa-glx \
+    libglib2.0-0
+
 # Copy the current directory contents into the container at /app
 COPY . /FYP_Python
 
