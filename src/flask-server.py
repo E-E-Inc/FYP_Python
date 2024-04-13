@@ -33,6 +33,7 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
 )
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 
