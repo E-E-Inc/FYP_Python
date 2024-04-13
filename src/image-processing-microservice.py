@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
+
 load_dotenv()
 
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
@@ -21,7 +23,6 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
 )
 
-CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 # MySQL Connection

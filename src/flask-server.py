@@ -18,6 +18,8 @@ from flask import g
 import os
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
+
 load_dotenv()
 
 # Session configuration
@@ -30,7 +32,6 @@ app.config.update(
 
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 
-CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 # MySQL Connection
@@ -122,6 +123,7 @@ def test_microservice_connection():
     except Exception as e:
         return jsonify({'status': 'Connection failed', 'error': str(e)})
 # Handle POST request to '/image_process_manually' endpoint for processing an image manually
+
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
 
