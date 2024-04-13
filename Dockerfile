@@ -14,7 +14,7 @@ COPY . /FYP_Python
 
 # Install Flask and create a virtual environment, then install dependencies
 RUN python -m venv myenv && \
-    /bin/bash -c "source myenv/bin/activate &&  pip install flask flask-cors && pip install flask && pip install --no-cache-dir -r requirements.txt"
+    /bin/bash -c "source myenv/bin/activate &&  pip install flask flask-cors && pip install flask && pip install --no-cache-dir -r requirements.txt && pip install uwsgi"
 
 # Expose any needed ports
 EXPOSE 5000

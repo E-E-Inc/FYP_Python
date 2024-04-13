@@ -18,7 +18,7 @@ from flask import g
 import os
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True ,resources={r"/*": {"origins": "https://foodlogix.up.railway.app"}})
 
 app.logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
