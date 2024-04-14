@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# Start the first process
-./src/flask-server.py &
+python3 ./src/flask-server.py &
 
 # Start the second process
-./src/image-processing-microservice.py &
+python3 ./src/image-processing-microservice.py &
 
 # Wait for any process to exit
 wait -n

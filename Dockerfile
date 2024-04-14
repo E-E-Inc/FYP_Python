@@ -16,14 +16,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 EXPOSE 5001
 
-COPY ./src/flask-server.py  flask-server.py
-COPY ./src/image-processing-microservice.py image-processing-microservice.py
+# Copy specific files into the container
+COPY ./src/flask-server.py  ./src/flask-server.py
+COPY ./src/image-processing-microservice.py ./src/image-processing-microservice.py
 COPY ./start-script.sh start-script.sh
 
-# Make sure the script is executable
+# Make sure the scripts are executable
 RUN chmod +x start-script.sh
-RUN chmod +x flask-server.py
-RUN chmod +x image-processing-microservice.py
+RUN chmod +x ./src/flask-server.py
+RUN chmod +x ./src/image-processing-microservice.py
 
 # Run the script when the container starts
 CMD ["./start-script.sh"]
