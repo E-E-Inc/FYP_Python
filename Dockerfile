@@ -1,3 +1,5 @@
+#FROM ubuntu:latest
+
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
@@ -7,15 +9,6 @@ WORKDIR /FYP_Python
 # Copy the current directory contents into the container at /app
 COPY . /FYP_Python
 
-# Install Flask
-RUN pip install flask
-
-# Install Flask-CORS
-RUN pip install -U flask-cors
-
-# Install mysql-connector-python
-RUN pip install mysql-connector-python
-
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -23,8 +16,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 EXPOSE 5001
 
-# Copy supervisord configuration file
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./src/flask-server.py  flask-server.py
+COPY ./src/image-processing-microservice.py image-processing-microservice.py
+COPY ./start-script.sh start-script.sh
 
-# Run supervisord
-CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Make sure the script is executable
+RUN chmod +x start-script.sh
+
+# Run the script when the container starts
+CMD ["./start-script.sh"]
