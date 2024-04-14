@@ -144,7 +144,7 @@ def image_process_manually():
     data['uid'] = uid
     print(data['uid'])
     try:
-        url= f'{SERVICE_URL}/process_manually'
+        url= f'https://fyppython-production.up.railway.app/manualInput'
         payload = {
             'foodName': food_name,
             'portion': portion_size,

@@ -30,6 +30,9 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
 )
 
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 CORS(app, supports_credentials=True)
@@ -103,7 +106,7 @@ def test():
     return jsonify({'status': 'Microservice is running'})
 
 # Handle POST request to '/process_manually' endpoint for processing an image manually
-@app.route('/process_manually', methods=['POST'])
+@app.route('/manualInput', methods=['POST'])
 def process_manually():
     try:       
         # Gets the portion size
