@@ -19,7 +19,7 @@ import os
 
 app = Flask(__name__)
 
-MICROSERVICE_URL = 'https://fyppython-production.up.railway.app:5001'  
+MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 MAIN_URL = 'https://foodlogix.up.railway.app'
 
 CORS(app)
