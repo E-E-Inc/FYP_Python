@@ -18,7 +18,7 @@ from flask import g
 import os
 
 app = Flask(__name__)
-cors = CORS(app, supports_credentials=True ,resources={r"/*": {"origins": "*"}})
+cors = CORS(app, supports_credentials=True)
 
 load_dotenv()
 
@@ -29,7 +29,8 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
 )
-app.config['CORS_HEADERS'] = 'Access-Control-Allow-Origin'
+app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 
