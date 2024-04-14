@@ -288,7 +288,7 @@ def logout():
 
 # Handle POST request to '/login' endpoint for logging in a user
 @app.route('/login', methods=['POST'])
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+#@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def login():
     try:
         # Get data from request
@@ -422,4 +422,4 @@ def showNutritionalInfo():
         return jsonify({'error': 'fetch failed'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5001)))
