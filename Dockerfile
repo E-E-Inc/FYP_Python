@@ -8,13 +8,8 @@ WORKDIR /FYP_Python
 COPY . /FYP_Python
 
 # Install Flask and create a virtual environment, then install dependencies
-#RUN python -m venv myenv && \
-#    /bin/bash -c "source myenv/bin/activate && pip install flask && pip install --no-cache-dir -r requirements.txt"
-
 RUN python -m venv myenv && \
-    /bin/bash -c "source myenv/bin/activate && pip install --no-cache-dir -r requirements.txt"
-
-RUN chmod +x ./start.sh
+    /bin/bash -c "source myenv/bin/activate && pip install flask && pip install --no-cache-dir -r requirements.txt"
 
 # Expose any needed ports
 EXPOSE 5000
