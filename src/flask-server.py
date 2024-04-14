@@ -22,7 +22,7 @@ app = Flask(__name__)
 SERVICE_URL = 'https://fyppython-production.up.railway.app'  
 FRONTEND_URL = 'https://foodlogix.up.railway.app'
 
-cors = CORS(app, resources={r"/*": {"origins": [SERVICE_URL, FRONTEND_URL], "supports_credentials": True}})
+CORS(app)
 
 load_dotenv()
 
@@ -117,7 +117,7 @@ def image_process():
 def test_microservice_connection():
     try:
         # Replace 'microservice_url' with the URL of your microservice
-        response = requests.get(SERVICE_URL)
+        response = requests.get(MICROSERVICE_URL)
 
         if response.status_code == 200:
             return jsonify({'status': 'Connection successful'})
