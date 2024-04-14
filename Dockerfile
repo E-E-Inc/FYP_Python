@@ -12,7 +12,6 @@ RUN python -m venv myenv && \
     /bin/bash -c "source myenv/bin/activate && pip install flask && pip install --no-cache-dir -r requirements.txt"
 
 # Expose any needed ports
-EXPOSE 5000
 EXPOSE 5001
 
 # Run the command to start your application
