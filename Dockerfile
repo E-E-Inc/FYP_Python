@@ -23,5 +23,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 EXPOSE 5001
 
-# Run the command to start your application
-CMD ["python", "./src/flask-server.py", "&", "python ./src/image-processing-microservice.py"]
+# Copy supervisord configuration file
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Run supervisord
+CMD ["/usr/bin/supervisord"]
