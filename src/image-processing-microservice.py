@@ -13,7 +13,16 @@ from datetime import datetime
 
 app = Flask(__name__)
 # CORS(app, supports_credentials=True)
-CORS(app, resources={r"/*": {"origins": "https://foodlogix.up.railway.app"}}, supports_credentials=True)
+
+MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
+MAIN_URL = 'https://foodlogix.up.railway.app'
+
+cors = CORS(app, resources={
+    r"/*": {
+        "origins": [MAIN_URL, MICROSERVICE_URL],
+        "supports_credentials": True,
+    }
+})
 
 app.logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
