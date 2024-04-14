@@ -17,12 +17,7 @@ app = Flask(__name__)
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 MAIN_URL = 'https://foodlogix.up.railway.app'
 
-cors = CORS(app, resources={
-    r"/*": {
-        "origins": [MAIN_URL, MICROSERVICE_URL],
-        "supports_credentials": True,
-    }
-})
+cors = CORS(app)
 
 app.logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
