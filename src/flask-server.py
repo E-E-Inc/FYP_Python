@@ -18,7 +18,16 @@ from flask import g
 import os
 
 app = Flask(__name__)
-cors = CORS(app, supports_credentials=True)
+
+MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
+MAIN_URL = 'https://foodlogix.up.railway.app'
+
+cors = CORS(app, resources={
+    r"/*": {
+        "origins": [MAIN_URL, MICROSERVICE_URL],
+        "supports_credentials": True,
+    }
+})
 
 load_dotenv()
 
@@ -30,9 +39,6 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
 )
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['CORS_SUPPORTS_CREDENTIALS'] = True
-
-MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
