@@ -12,8 +12,8 @@ COPY . /FYP_Python
 #    /bin/bash -c "source myenv/bin/activate && pip install flask && pip install --no-cache-dir -r requirements.txt"
 
 RUN python -m venv myenv && \
-    /bin/bash -c "source myenv/bin/activate && pip install flask gunicorn && pip install --no-cache-dir -r requirements.txt"
-    
+    /bin/bash -c "source myenv/bin/activate && pip install --no-cache-dir -r requirements.txt"
+
 RUN chmod +x ./start.sh
 
 # Expose any needed ports
@@ -21,4 +21,4 @@ EXPOSE 5000
 EXPOSE 5001
 
 # Run the command to start your application
-CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py && python ./src/image-processing-microservice.py"]
+CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py"]
