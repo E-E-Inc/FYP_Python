@@ -27,4 +27,4 @@ EXPOSE 5001
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Run supervisord
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
