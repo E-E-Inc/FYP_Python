@@ -22,7 +22,7 @@ app = Flask(__name__)
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app:5001'  
 MAIN_URL = 'https://foodlogix.up.railway.app'
 
-cors = CORS(app)
+CORS(app)
 
 load_dotenv()
 
@@ -288,7 +288,7 @@ def logout():
 
 # Handle POST request to '/login' endpoint for logging in a user
 @app.route('/login', methods=['POST'])
-@cross_origin()
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def login():
     try:
         # Get data from request
