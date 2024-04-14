@@ -14,6 +14,9 @@ RUN python -m venv myenv && \
 # Install Flask
 RUN pip install flask
 
+# Install Flask-CORS
+RUN pip install -U flask-cors
+
 # Expose any needed ports
 EXPOSE 5001
 
