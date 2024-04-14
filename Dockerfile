@@ -11,6 +11,8 @@ COPY . /FYP_Python
 RUN python -m venv myenv && \
     /bin/bash -c "source myenv/bin/activate && pip install flask && pip install --no-cache-dir -r requirements.txt"
 
+RUN chmod +x ./start.sh
+
 # Expose any needed ports
 EXPOSE 5000
 EXPOSE 5001
