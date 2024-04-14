@@ -22,6 +22,8 @@ COPY ./start-script.sh start-script.sh
 
 # Make sure the script is executable
 RUN chmod +x start-script.sh
+RUN chmod +x flask-server.py
+RUN chmod +x image-processing-microservice.py
 
 # Run the script when the container starts
 CMD ["./start-script.sh"]
