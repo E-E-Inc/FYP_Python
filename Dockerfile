@@ -15,4 +15,6 @@ RUN python -m venv myenv && \
 EXPOSE 5001
 
 # Run the command to start your application
-CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py"]
+#CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py &  .src/image-processing-microservice.py"]
+# Run the command to start your application
+CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py & python ./src/image-processing-microservice.py"]
