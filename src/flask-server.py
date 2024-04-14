@@ -22,7 +22,7 @@ app = Flask(__name__)
 SERVICE_URL = 'https://fyppython-production.up.railway.app'  
 FRONTEND_URL = 'https://foodlogix.up.railway.app'
 
-CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": [SERVICE_URL, FRONTEND_URL], "supports_credentials": True}})
 
 load_dotenv()
 
