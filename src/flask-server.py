@@ -13,16 +13,12 @@ import hashlib
 from dotenv import load_dotenv
 from datetime import datetime
 import requests
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask import g
 import os
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True ,resources={r"/*": {"origins": "https://foodlogix.up.railway.app"}})
-
-app.logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-app.logger.addHandler(handler)
+cors = CORS(app, supports_credentials=True ,resources={r"/*": {"origins": "*"}})
 
 load_dotenv()
 
@@ -33,7 +29,7 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
 )
-app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_HEADERS'] = 'Access-Control-Allow-Origin'
 
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 
@@ -290,6 +286,7 @@ def logout():
 
 # Handle POST request to '/login' endpoint for logging in a user
 @app.route('/login', methods=['POST'])
+@cross_origin()
 def login():
     try:
         # Get data from request
