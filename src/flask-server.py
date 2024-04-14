@@ -19,8 +19,8 @@ import os
 
 app = Flask(__name__)
 
-MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
-MAIN_URL = 'https://foodlogix.up.railway.app'
+SERVICE_URL = 'https://fyppython-production.up.railway.app'  
+FRONTEND_URL = 'https://foodlogix.up.railway.app'
 
 CORS(app)
 
@@ -117,7 +117,7 @@ def image_process():
 def test_microservice_connection():
     try:
         # Replace 'microservice_url' with the URL of your microservice
-        response = requests.get(MICROSERVICE_URL)
+        response = requests.get(SERVICE_URL)
 
         if response.status_code == 200:
             return jsonify({'status': 'Connection successful'})
