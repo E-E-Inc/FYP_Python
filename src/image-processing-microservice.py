@@ -6,7 +6,6 @@ from werkzeug.utils import secure_filename
 from FoodRecognition import IdentifyFoodYolo, getCalories
 import mysql.connector
 import logging
-import os
 
 from dotenv import load_dotenv
 from datetime import datetime
