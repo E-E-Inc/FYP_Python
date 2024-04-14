@@ -17,8 +17,6 @@ app = Flask(__name__)
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
 MAIN_URL = 'https://foodlogix.up.railway.app'
 
-cors = CORS(app)
-
 app.logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 app.logger.addHandler(handler)
@@ -34,6 +32,7 @@ app.config.update(
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
+CORS(app, supports_credentials=True)
 # MySQL Connection
 db = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
@@ -161,6 +160,6 @@ def insert_food_data(food_name, portion_size, overallCalories, uid):
     except Exception as e:
         logging.error(f"Failed to insert food data: {str(e)}")
 
-#if __name__ == '__main__':
- #   app.run(host='0.0.0.0', port= 5000)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port= 5000)
  

@@ -22,8 +22,6 @@ app = Flask(__name__)
 SERVICE_URL = 'https://fyppython-production.up.railway.app'  
 FRONTEND_URL = 'https://foodlogix.up.railway.app'
 
-CORS(app)
-
 load_dotenv()
 
 # Session configuration
@@ -36,6 +34,8 @@ app.config.update(
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
+
+CORS(app, supports_credentials=True)
 
 # MySQL Connection
 db = mysql.connector.connect(
@@ -117,7 +117,7 @@ def image_process():
 def test_microservice_connection():
     try:
         # Replace 'microservice_url' with the URL of your microservice
-        response = requests.get(MICROSERVICE_URL)
+        response = requests.get(SERVICE_URL)
 
         if response.status_code == 200:
             return jsonify({'status': 'Connection successful'})
