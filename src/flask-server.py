@@ -117,7 +117,7 @@ def image_process():
 def test_microservice_connection():
     try:
         # Replace 'microservice_url' with the URL of your microservice
-        response = requests.get(SERVICE_URL)
+        response = requests.get("https://fyppython-production.up.railway.app/test")
 
         if response.status_code == 200:
             return jsonify({'status': 'Connection successful'})
