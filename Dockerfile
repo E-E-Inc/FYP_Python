@@ -9,19 +9,15 @@ COPY . /FYP_Python
 
 # Install Flask and create a virtual environment, then install dependencies
 RUN python -m venv myenv && \
-    /bin/bash -c "source myenv/bin/activate && pip install flask && pip install -r requirements.txt"
+    /bin/bash -c "source myenv/bin/activate"
 
-# Install Flask
-RUN pip install flask
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Flask-CORS
-RUN pip install -U flask-cors
-
-# Install mysql-connector-python
-RUN pip install mysql-connector-python
 
 # Expose any needed ports
 EXPOSE 5001
+EXPOSE 5000
 
 # Run the command to start your application
 #CMD ["bash", "-c", "source myenv/bin/activate && python ./src/flask-server.py &  .src/image-processing-microservice.py"]
