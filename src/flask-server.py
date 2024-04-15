@@ -137,16 +137,17 @@ def image_process_manually():
     uid = session.get('uid')
     data = request.get_json()
 
+    if not data:
+        return jsonify({'error': 'No data provided'})
+    
     # Extract food name and portion size from the JSON data
     food_name = data.get('foodName')
     portion_size = data.get('portion')
 
-    if not data:
-        return jsonify({'error': 'No data provided'})
-    
     # Add the user ID to the data
     data['uid'] = uid
     print(data['uid'])
+    
     try:
         url= f'https://fyppython-production.up.railway.app/manualInput'
         payload = {
