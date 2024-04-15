@@ -20,6 +20,7 @@ import os
 app = Flask(__name__)
 
 SERVICE_URL = 'https://fyppython-production.up.railway.app'  
+MICROSERVICE_URL = 'https://fyppython-production.up.railway.app/microservice' 
 FRONTEND_URL = 'https://foodlogix.up.railway.app'
 
 load_dotenv()
@@ -132,38 +133,35 @@ def test_connection():
 # Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
-
-    uid = session.get('uid')
     data = request.get_json()
-
-    # Extract food name and portion size from the JSON data
-    food_name = data.get('foodName')
-    portion_size = data.get('portion')
 
     if not data:
         return jsonify({'error': 'No data provided'})
-    
-    # Add the user ID to the data
+
+    uid = session.get('uid')
+    food_name = data.get('foodName')
+    portion_size = data.get('portion')
+
     data['uid'] = uid
-    print(data['uid'])
+
     try:
-        url= f'https://fyppython-production.up.railway.app/manualInput'
+        url = os.getenv('MICROSERVICE_URL') + '/manualInput'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
             'uid': uid
         }
         response = requests.post(url, json=payload)
-
-        if response.status_code == 200:
-            print("response.json(): ", response.json())
-            return jsonify(response.json())
-        else:
-            return jsonify({'error': 'processing failed'})
-    
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.exceptions.HTTPError as http_err:
+        return jsonify({'error': f'HTTP error occurred: {http_err}'})
+    except requests.exceptions.RequestException as err:
+        return jsonify({'error': f'Request error occurred: {err}'})
     except Exception as e:
-        return jsonify({'error': f'processing failed: {str(e)}'})
-   
+        return jsonify({'error': f'Unexpected error occurred: {str(e)}'})
+    
+
 # Handle POST request to '/register' endpoint for registering a user
 @app.route('/register', methods=['POST'])
 def registeration():

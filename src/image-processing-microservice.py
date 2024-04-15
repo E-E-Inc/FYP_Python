@@ -13,12 +13,8 @@ from datetime import datetime
 app = Flask(__name__)
 # CORS(app, supports_credentials=True)
 
-MICROSERVICE_URL = 'https://fyppython-production.up.railway.app'  
-MAIN_URL = 'https://foodlogix.up.railway.app'
-
-app.logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-app.logger.addHandler(handler)
+SERVICE_URL = 'https://fyppython-production.up.railway.app'  
+FRONTEND_URL = 'https://foodlogix.up.railway.app'
 
 load_dotenv()
 
@@ -30,7 +26,6 @@ app.config.update(
 )
 
 app.config['CORS_HEADERS'] = 'Content-Type'
-
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
