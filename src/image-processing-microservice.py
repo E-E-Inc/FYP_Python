@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import mysql.connector
@@ -13,13 +13,6 @@ from datetime import datetime
 app = Flask(__name__)
 # CORS(app, supports_credentials=True)
 
-ms_blueprint = Blueprint('image-processing-microservice', __name__)
-
-
-SERVICE_URL = 'https://fyppython-production.up.railway.app' 
-MICROSERVICE_URL = 'https://fyppython-production.up.railway.app/microservice' 
-FRONTEND_URL = 'https://foodlogix.up.railway.app'
-
 load_dotenv()
 
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
@@ -30,6 +23,7 @@ app.config.update(
 )
 
 app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
@@ -99,7 +93,7 @@ def process():
     except Exception as e:
             return jsonify({'error': f'Error processing image: {str(e)}'}), 500
     
-@ms_blueprint.route('/microservice/test', methods=['GET'])
+@app.route('/microservice/test', methods=['GET'])
 def test():
     return jsonify({'status': 'Microservice is running'})
 

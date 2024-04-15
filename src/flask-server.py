@@ -20,7 +20,7 @@ from src import ms_blueprint
 
 app = Flask(__name__)
 
-app.register_blueprint(ms_blueprint)
+#app.register_blueprint(ms_blueprint)
 #app.register_blueprint(test_connection_blueprint)
 
 SERVICE_URL = 'https://fyppython-production.up.railway.app'  
@@ -122,7 +122,7 @@ def image_process():
 def test_connection():
     try:
         # Send a GET request to the microservice
-        response = requests.get('https://fyppython-production.up.railway.app/microservice/test')
+        response = requests.get('{MICROSERVICE_URL}/test')
     
         # If the request is successful, return the response
         if response.status_code == 200:
