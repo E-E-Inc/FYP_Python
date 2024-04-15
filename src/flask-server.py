@@ -19,10 +19,6 @@ import os
 
 app = Flask(__name__)
 
-SERVICE_URL = 'https://fyppython-production.up.railway.app'  
-MICROSERVICE_URL = 'https://fyppython-production.up.railway.app/microservice' 
-FRONTEND_URL = 'https://foodlogix.up.railway.app'
-
 load_dotenv()
 
 # Session configuration
@@ -79,7 +75,7 @@ def image_upload():
         return jsonify({'error':'no file part'})
     
     try:
-        url= f'{MICROSERVICE_URL}/upload'
+        url= '/upload'
         files = {'file': file}
         response = requests.post(url, files=files)
 
@@ -104,7 +100,7 @@ def image_process():
     data['uid'] = uid
 
     try:
-        url= f'{MICROSERVICE_URL}/process'
+        url= '/process'
         response = requests.post(url, json=data)
         if response.status_code == 200:
             return jsonify(response.json())
@@ -114,11 +110,11 @@ def image_process():
     except Exception as e:
         return jsonify({'error': f'processing failed: {str(e)}'})
    
-@app.route('/microservice/test_connection', methods=['GET'])
+@app.route('/test_connection', methods=['GET'])
 def test_connection():
     try:
         # Send a GET request to the microservice
-        response = requests.get('{MICROSERVICE_URL}/test')
+        response = requests.get('/test')
     
         # If the request is successful, return the response
         if response.status_code == 200:
@@ -149,7 +145,7 @@ def image_process_manually():
     print(data['uid'])
     
     try:
-        url= f'https://fyppython-production.up.railway.app/manualInput'
+        url= '/manualInput'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
