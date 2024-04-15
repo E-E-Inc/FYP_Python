@@ -123,10 +123,10 @@ def test_connection():
         if response.status_code == 200:
             return {"status": "Connection successful", "response": response.json()}, 200
         else:
-            return {"error": response.status_code, "status": "Connection failed"}, 404
+            return {"error": response.status_code, "status": "126 Connection failed"}, 400
     except Exception as e:
         # If the request fails, return an error message
-        return {"error": str(e), "status": "Connection failed"}, 404
+        return {"error": str(e), "status": "129 Connection failed"}, 404
     
 
 # Handle POST request to '/image_process_manually' endpoint for processing an image manually
