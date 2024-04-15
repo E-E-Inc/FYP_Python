@@ -118,7 +118,7 @@ def image_process():
 def test_connection():
     try:
         # Send a GET request to the microservice
-        response = requests.get('https://fyppython-production.up.railway.app/microservice/test')
+        response = requests.get('{MICROSERVICE_URL}/test')
     
         # If the request is successful, return the response
         if response.status_code == 200:
@@ -133,35 +133,38 @@ def test_connection():
 # Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
-    data = request.get_json()
-
-    if not data:
-        return jsonify({'error': 'No data provided'})
 
     uid = session.get('uid')
+    data = request.get_json()
+
+    # Extract food name and portion size from the JSON data
     food_name = data.get('foodName')
     portion_size = data.get('portion')
 
+    if not data:
+        return jsonify({'error': 'No data provided'})
+    
+    # Add the user ID to the data
     data['uid'] = uid
-
+    print(data['uid'])
     try:
-        url = os.getenv('{MICROSERVICE_URL}/manualInput')
+        url= f'https://fyppython-production.up.railway.app/manualInput'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
             'uid': uid
         }
         response = requests.post(url, json=payload)
-        response.raise_for_status()
-        return jsonify(response.json())
-    except requests.exceptions.HTTPError as http_err:
-        return jsonify({'error': f'HTTP error occurred: {http_err}'})
-    except requests.exceptions.RequestException as err:
-        return jsonify({'error': f'Request error occurred: {err}'})
-    except Exception as e:
-        return jsonify({'error': f'Unexpected error occurred: {str(e)}'})
-    
 
+        if response.status_code == 200:
+            print("response.json(): ", response.json())
+            return jsonify(response.json())
+        else:
+            return jsonify({'error': 'processing failed'})
+    
+    except Exception as e:
+        return jsonify({'error': f'processing failed: {str(e)}'})
+   
 # Handle POST request to '/register' endpoint for registering a user
 @app.route('/register', methods=['POST'])
 def registeration():
