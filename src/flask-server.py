@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session, redirect, url_for
+from flask import Flask, request, jsonify, session, redirect, url_for, Blueprint
 #from functools import wraps
 from flask_cors import CORS
 import json
@@ -16,8 +16,12 @@ import requests
 from flask_cors import CORS, cross_origin
 from flask import g
 import os
+from src import ms_blueprint
 
 app = Flask(__name__)
+
+app.register_blueprint(ms_blueprint)
+#app.register_blueprint(test_connection_blueprint)
 
 SERVICE_URL = 'https://fyppython-production.up.railway.app'  
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app/microservice' 
