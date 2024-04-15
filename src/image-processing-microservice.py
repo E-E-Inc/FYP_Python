@@ -100,7 +100,7 @@ def process():
     except Exception as e:
             return jsonify({'error': f'Error processing image: {str(e)}'}), 500
     
-@app.route('/test', methods=['GET'])
+@app.route('/microservice/test', methods=['GET'])
 def test():
     return jsonify({'status': 'Microservice is running'})
 

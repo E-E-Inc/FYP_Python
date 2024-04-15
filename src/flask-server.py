@@ -113,12 +113,12 @@ def image_process():
     except Exception as e:
         return jsonify({'error': f'processing failed: {str(e)}'})
    
-@app.route('/test_connection', methods=['GET'])
+@app.route('/microservice/test_connection', methods=['GET'])
 def test_connection():
     try:
         # Send a GET request to the microservice
-        response = requests.get('https://fyppython-production.up.railway.app/test')
-
+        response = requests.get('https://fyppython-production.up.railway.app/microservice/test')
+    
         # If the request is successful, return the response
         if response.status_code == 200:
             return {"status": "Connection successful", "response": response.json()}, 200
@@ -126,8 +126,8 @@ def test_connection():
             return {"error": response.status_code, "status": "126 Connection failed"}, 400
     except Exception as e:
         # If the request fails, return an error message
-        return {"error": str(e), "status": "129 Connection failed"}, 404
-    
+        return {"error": str(e), "status": "129 Connection failed"}, 500  # Changed status code to 500
+
 
 # Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
