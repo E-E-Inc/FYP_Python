@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session, redirect, url_for, Blueprint
+from flask import Flask, request, jsonify, session, redirect, url_for
 #from functools import wraps
 from flask_cors import CORS
 import json
@@ -16,12 +16,8 @@ import requests
 from flask_cors import CORS, cross_origin
 from flask import g
 import os
-from src import ms_blueprint
 
 app = Flask(__name__)
-
-#app.register_blueprint(ms_blueprint)
-#app.register_blueprint(test_connection_blueprint)
 
 SERVICE_URL = 'https://fyppython-production.up.railway.app'  
 MICROSERVICE_URL = 'https://fyppython-production.up.railway.app/microservice' 
@@ -122,7 +118,7 @@ def image_process():
 def test_connection():
     try:
         # Send a GET request to the microservice
-        response = requests.get('{MICROSERVICE_URL}/test')
+        response = requests.get('https://fyppython-production.up.railway.app/microservice/test')
     
         # If the request is successful, return the response
         if response.status_code == 200:
@@ -149,7 +145,7 @@ def image_process_manually():
     data['uid'] = uid
 
     try:
-        url = os.getenv('MICROSERVICE_URL') + '/manualInput'
+        url = os.getenv('{MICROSERVICE_URL}/manualInput')
         payload = {
             'foodName': food_name,
             'portion': portion_size,
