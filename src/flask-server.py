@@ -129,7 +129,7 @@ def test_connection():
 # Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
-    print("image_process_manually method")
+
     uid = session.get('uid')
     data = request.get_json()
 
@@ -153,16 +153,15 @@ def image_process_manually():
         }
         response = requests.post(url, json=payload)
 
-    except requests.exceptions.RequestException as e:
-        # If the request fails, return an error message
-        return {"error": str(e), "status": "129 Connection failed"}, 500
-
-    if response.status_code == 200:
-        print("response.json(): ", response.json())
-        return jsonify(response.json())
-    else:
-        return jsonify({'error': 'processing failed'})
-        
+        if response.status_code == 200:
+            print("response.json(): ", response.json())
+            return jsonify(response.json())
+        else:
+            return jsonify({'error': 'processing failed'})
+    
+    except Exception as e:
+        return jsonify({'error': f'processing failed: {str(e)}'})
+   
 # Handle POST request to '/register' endpoint for registering a user
 @app.route('/register', methods=['POST'])
 def registeration():
