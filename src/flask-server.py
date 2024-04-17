@@ -32,6 +32,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
+MICROSERVICE_URL = 'http://localhost:5000'  
+
 CORS(app, supports_credentials=True)
 
 # MySQL Connection
@@ -100,7 +102,7 @@ def image_process():
     data['uid'] = uid
 
     try:
-        url= '/process'
+        url = f"{MICROSERVICE_URL}/process"
         response = requests.post(url, json=data)
         if response.status_code == 200:
             return jsonify(response.json())
@@ -114,7 +116,7 @@ def image_process():
 def test_connection():
     try:
         # Send a GET request to the microservice
-        response = requests.get('/test')
+        response = requests.get(f"{MICROSERVICE_URL}/test")
     
         # If the request is successful, return the response
         if response.status_code == 200:
@@ -145,7 +147,7 @@ def image_process_manually():
     print(data['uid'])
     
     try:
-        url= '/manualInput'
+        url = f"{MICROSERVICE_URL}/manualInput"
         payload = {
             'foodName': food_name,
             'portion': portion_size,
