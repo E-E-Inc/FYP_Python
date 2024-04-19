@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 import os
 import mysql.connector
@@ -6,33 +6,27 @@ from werkzeug.utils import secure_filename
 from FoodRecognition import IdentifyFoodYolo, getCalories
 import mysql.connector
 import logging
-
 from dotenv import load_dotenv
 from datetime import datetime
 
 app = Flask(__name__)
-#CORS(app, supports_credentials=True)
-
 load_dotenv()
+CORS(app, supports_credentials=True)
+
+IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SESSION_TYPE'] = 'filesystem'  # session type
+
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
 )
 
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-
-IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
-
-CORS(app, resources={r"/*": {"origins": "https://fyppython-production.up.railway.app/"}}, supports_credentials=True)
-
 # MySQL Connection
 db = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
-    port=int(os.getenv("DB_PORT")), 
+    port=os.getenv("DB_PORT"), 
     user=os.getenv("DB_USER"),  
     password=os.getenv("DB_PASSWORD"), 
     database=os.getenv("DB_NAME")
@@ -66,13 +60,17 @@ def upload():
 # Handle POST request to '/process' endpoint for processing an image
 @app.route('/process', methods=['POST'])
 def process():
+    print("Here girlie")
     try:
+        print("In /process microservice")
+       
         # Gets the portion size
         data = request.get_json()
         filePath = data.get('filePath')
         portion_Size = data.get('portionSize')
         uid = data.get('uid')
 
+        print("Uid: ", uid) 
         if not filePath:
             return jsonify({'error': 'No file path provided'}), 400
 
@@ -94,31 +92,27 @@ def process():
     except Exception as e:
             return jsonify({'error': f'Error processing image: {str(e)}'}), 500
     
-@app.route('/test', methods=['GET'])
-def test():
-    return jsonify({'status': 'Microservice is running'})
-
 # Handle POST request to '/process_manually' endpoint for processing an image manually
-@app.route('/manualInput', methods=['POST'])
+@app.route('/process_manually', methods=['POST'])
 def process_manually():
-    print("In process manually")
     try:       
         # Gets the portion size
         data = request.get_json()
-        print(data)
-
+        
         food_Name = data.get('foodName')
         portion_Size = data.get('portion')
-
         uid = data.get('uid')
-        print("uid in /process_manually: ", uid)
 
+        print("User ID in microservice: ", uid)   
+        print("Food Name: ", food_Name)
+        print("Portion Size: ", portion_Size)
+        
         if not portion_Size:
             return jsonify({'error': 'No portion size provided'}), 400
 
         # Call the functions to get calories
         calories = getCalories.Calories(food_Name, portion_Size)
-      
+        print("Calories: ", calories)
         # Insert data into the database
         insert_food_data(food_Name, portion_Size, calories, uid)
         return jsonify({
@@ -132,11 +126,11 @@ def process_manually():
     
 # Method to entering food into database
 def insert_food_data(food_name, portion_size, overallCalories, uid):
-    print("in Insert food data")
+    print("In insert_food_data")
     try:
         if uid:
             cursor = db.cursor()
-            print("User ID in insert_food_data: ", uid)
+            print("there is a user")
             # Get current timestamp
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
             # Execute SQL query to insert data into the Food table

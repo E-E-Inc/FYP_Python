@@ -13,34 +13,29 @@ import hashlib
 from dotenv import load_dotenv
 from datetime import datetime
 import requests
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask import g
-import os
 
 app = Flask(__name__)
-
 load_dotenv()
 
-# Session configuration
 app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SESSION_TYPE'] = 'filesystem'  # session type
+
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_SAMESITE='None',
 )
 
+MICROSERVICE_URL = 'http://localhost:5001'  
 
+CORS(app, supports_credentials=True)
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
-
-MICROSERVICE_URL = 'http://127.0.0.1:5001'  
-
-CORS(app, resources={r"/*": {"origins": "https://foodlogix.up.railway.app"}}, supports_credentials=True)
-
 
 # MySQL Connection
 db = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
-    port=int(os.getenv("DB_PORT")), 
+    port=os.getenv("DB_PORT"), 
     user=os.getenv("DB_USER"),  
     password=os.getenv("DB_PASSWORD"), 
     database=os.getenv("DB_NAME")
@@ -55,7 +50,7 @@ food_data = None
 def before_request():
     g.db = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
-    port=int(os.getenv("DB_PORT")), 
+    port=os.getenv("DB_PORT"), 
     user=os.getenv("DB_USER"),  
     password=os.getenv("DB_PASSWORD"), 
     database=os.getenv("DB_NAME")
@@ -66,6 +61,7 @@ def teardown_request(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
+
 
 # Handle POST request to '/image_upload' endpoint for uploading an image
 @app.route('/image_upload', methods=['POST'])
@@ -78,7 +74,7 @@ def image_upload():
         return jsonify({'error':'no file part'})
     
     try:
-        url= '/upload'
+        url= f'{MICROSERVICE_URL}/upload'
         files = {'file': file}
         response = requests.post(url, files=files)
 
@@ -95,15 +91,18 @@ def image_upload():
 @app.route('/image_process', methods=['POST'])
 def image_process():
     uid = session.get('uid')
+    # Gets the portion size
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'})
     
+    print("Session uid in /information: ", uid)
     # Add the user ID to the data
     data['uid'] = uid
+    print("Data: ", data)
 
     try:
-        url = f"{MICROSERVICE_URL}/process"
+        url= f'{MICROSERVICE_URL}/process'
         response = requests.post(url, json=data)
         if response.status_code == 200:
             return jsonify(response.json())
@@ -113,36 +112,29 @@ def image_process():
     except Exception as e:
         return jsonify({'error': f'processing failed: {str(e)}'})
    
-@app.route('/test_connection', methods=['GET'])
-def test_connection():
-    try:
-        response = requests.get(f'{MICROSERVICE_URL}/test')
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return {'error': 'Request to microservice failed', 'status_code': response.status_code}
-    except requests.exceptions.RequestException as e:
-        return {'error': f'Failed to connect to microservice: {e}'}
-    
-
+# Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
 
+    #global userid
     uid = session.get('uid')
+    print("Session uid in /image_process_manually: ", uid)
+    # Gets the portion size
     data = request.get_json()
 
     # Extract food name and portion size from the JSON data
     food_name = data.get('foodName')
     portion_size = data.get('portion')
-
-    # if not data:
-    #     return jsonify({'error': 'No data provided'})
+    
+    if not data:
+        return jsonify({'error': 'No data provided'})
     
     # Add the user ID to the data
     data['uid'] = uid
-    print(data['uid'])
+    print("Food Name", food_name)
+    print("Portion Size", portion_size)
     try:
-        url= f'{MICROSERVICE_URL}/manualInput'
+        url= f'{MICROSERVICE_URL}/process_manually'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
@@ -151,7 +143,6 @@ def image_process_manually():
         response = requests.post(url, json=payload)
 
         if response.status_code == 200:
-            print("response.json(): ", response.json())
             return jsonify(response.json())
         else:
             return jsonify({'error': 'processing failed'})
@@ -286,7 +277,6 @@ def logout():
 
 # Handle POST request to '/login' endpoint for logging in a user
 @app.route('/login', methods=['POST'])
-#@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def login():
     try:
         # Get data from request
@@ -313,6 +303,7 @@ def login():
 
         # Fetch the first row from the result set
         user = cursor.fetchone()
+        print("User: ", user)
         if user:
             password_from_db = user["password"]
         
@@ -320,8 +311,14 @@ def login():
             hash_user = hashlib.sha256(password.encode()).hexdigest()
  
             if user and hash_user == password_from_db:
+
                 session['uid'] = user["uid"]
+
+                print("Session: ", session['uid'])
+                print("User logged in successfully")
+
                 response = jsonify({'message': 'Logged in', 'uid': str(session['uid'])})
+
                 response.headers['Set-Cookie'] = 'session uid =' + str(session['uid'])
                 return response
                 
@@ -339,7 +336,9 @@ def login():
 @app.route('/information', methods=['GET'])
 def information():
     try:
+        # print("Session: ", session)
         sessionuid = session.get('uid')
+        print("Session uid in /information: ", sessionuid)
 
         if sessionuid is None:
             return jsonify({'error': 'Not logged in'}), 401
@@ -349,13 +348,14 @@ def information():
         
         # Create cursor to interact with database returning results as dictionaries
         cursor = g.db.cursor(dictionary=True)
-      
+        # print("Session uid in /information: ",sessionuid)
+
         #Execute sql query
         cursor.execute("SELECT * FROM Food WHERE uid = %s AND DATE(timestamp) = %s", (sessionuid, selected_date))
 
         # Fetch all rows from the result set
         rows = cursor.fetchall()
-       
+        # print("Rows: ", rows)
         # Close cursor
         cursor.close()
         
@@ -372,7 +372,9 @@ def information():
 @app.route('/needed_calories', methods=['GET'])
 def get_needed_calories():
     try:
+        
         uidcals = session.get('uid')
+        print("Session uid in /needed_calories: ", session.get('uid'))
         if not uidcals:
             return jsonify({'error': 'Missing uid'}), 400
 
@@ -384,7 +386,7 @@ def get_needed_calories():
 
         # Fetch the first row from the result set
         row = cursor.fetchone()
-
+        print("Row: ", row)
         # Close the cursor
         cursor.close()
 
@@ -419,5 +421,8 @@ def showNutritionalInfo():
         print(f"fetch failed: {str(e)}")
         return jsonify({'error': 'fetch failed'}), 500
 
+
+
+# Run the server in debug mode - 'python flask-server.py'
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(debug=True, port=5000)
