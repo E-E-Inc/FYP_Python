@@ -32,7 +32,7 @@ app.config.update(
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
-MICROSERVICE_URL = 'https://krw61zd0-5001.eun1.devtunnels.ms'  
+MICROSERVICE_URL = 'http://localhost:5001'  
 
 CORS(app, resources={r"/*": {"origins": "https://foodlogix.up.railway.app"}}, supports_credentials=True)
 
