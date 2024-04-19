@@ -27,7 +27,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "https://fyppython-production.up.railway.app/"}}, supports_credentials=True)
+
 # MySQL Connection
 db = mysql.connector.connect(
     host=os.getenv("DB_HOST"),

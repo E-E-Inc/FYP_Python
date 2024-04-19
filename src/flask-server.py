@@ -34,7 +34,8 @@ IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
 MICROSERVICE_URL = 'http://localhost:5001'  
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:5001"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "https://foodlogix.up.railway.app"}}, supports_credentials=True)
+
 
 # MySQL Connection
 db = mysql.connector.connect(
