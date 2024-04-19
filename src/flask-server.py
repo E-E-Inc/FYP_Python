@@ -130,9 +130,10 @@ def image_process_manually():
         return jsonify({'error': 'No data provided'})
     
     # Add the user ID to the data
-    data['uid'] = uid
+    #uid = data.get('uid')
     print("Food Name", food_name)
     print("Portion Size", portion_size)
+    print("Data: ", uid)
     try:
         url= f'{MICROSERVICE_URL}/process_manually'
         payload = {
