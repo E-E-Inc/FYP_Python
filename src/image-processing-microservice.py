@@ -100,6 +100,7 @@ def test():
 # Handle POST request to '/process_manually' endpoint for processing an image manually
 @app.route('/manualInput', methods=['POST'])
 def process_manually():
+    print("In process manually")
     try:       
         # Gets the portion size
         data = request.get_json()
