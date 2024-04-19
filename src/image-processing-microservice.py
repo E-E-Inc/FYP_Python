@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 
 app = Flask(__name__)
-# CORS(app, supports_credentials=True)
+#CORS(app, supports_credentials=True)
 
 load_dotenv()
 
@@ -27,7 +27,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 # MySQL Connection
 db = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
@@ -157,4 +157,4 @@ def insert_food_data(food_name, portion_size, overallCalories, uid):
         logging.error(f"Failed to insert food data: {str(e)}")
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)

@@ -32,7 +32,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 IMAGES_DIR = os.path.abspath(".\\src\\Images\\")
 
-MICROSERVICE_URL = 'http://localhost:5000'  
+MICROSERVICE_URL = 'http://localhost:5001'  
 
 CORS(app, supports_credentials=True)
 
@@ -115,18 +115,14 @@ def image_process():
 @app.route('/test_connection', methods=['GET'])
 def test_connection():
     try:
-        # Send a GET request to the microservice
-        response = requests.get(f"{MICROSERVICE_URL}/test")
-    
-        # If the request is successful, return the response
+        response = requests.get(f'{MICROSERVICE_URL}/test')
         if response.status_code == 200:
-            return {"status": "Connection successful", "response": response.json()}, 200
+            return response.json()
         else:
-            return {"error": response.status_code, "status": "126 Connection failed"}, 400
-    except Exception as e:
-        # If the request fails, return an error message
-        return {"error": str(e), "status": "129 Connection failed"}, 500  # Changed status code to 500
-
+            return {'error': 'Request to microservice failed', 'status_code': response.status_code}
+    except requests.exceptions.RequestException as e:
+        return {'error': f'Failed to connect to microservice: {e}'}
+    
 
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
@@ -138,8 +134,8 @@ def image_process_manually():
     food_name = data.get('foodName')
     portion_size = data.get('portion')
 
-    if not data:
-        return jsonify({'error': 'No data provided'})
+    # if not data:
+    #     return jsonify({'error': 'No data provided'})
     
     # Add the user ID to the data
     data['uid'] = uid
@@ -423,4 +419,4 @@ def showNutritionalInfo():
         return jsonify({'error': 'fetch failed'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5001)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
