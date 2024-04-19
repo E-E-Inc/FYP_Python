@@ -128,26 +128,24 @@ def test_connection():
         return {"error": str(e), "status": "129 Connection failed"}, 500  # Changed status code to 500
 
 
-# Handle POST request to '/image_process_manually' endpoint for processing an image manually
 @app.route('/image_process_manually', methods=['POST'])
 def image_process_manually():
 
     uid = session.get('uid')
     data = request.get_json()
 
-    if not data:
-        return jsonify({'error': 'No data provided'})
-    
     # Extract food name and portion size from the JSON data
     food_name = data.get('foodName')
     portion_size = data.get('portion')
 
+    if not data:
+        return jsonify({'error': 'No data provided'})
+    
     # Add the user ID to the data
     data['uid'] = uid
     print(data['uid'])
-    
     try:
-        url = f"{MICROSERVICE_URL}/manualInput"
+        url= f'{MICROSERVICE_URL}/process_manually'
         payload = {
             'foodName': food_name,
             'portion': portion_size,
