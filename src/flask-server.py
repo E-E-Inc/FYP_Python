@@ -142,7 +142,7 @@ def image_process_manually():
             'uid': uid
         }
         response = requests.post(url, json=payload)
-
+        print("Response: ", response.status_code)
         if response.status_code == 200:
             return jsonify(response.json())
         else:

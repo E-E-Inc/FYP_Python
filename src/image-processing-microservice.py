@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 import mysql.connector
 from werkzeug.utils import secure_filename
-from FoodRecognition import IdentifyFoodYolo, getCalories
+from FoodRecognition import IdentifyFoodYolo, getCalories, IdentifyFoodYoloManual
 import mysql.connector
 import logging
 from dotenv import load_dotenv
@@ -98,7 +98,6 @@ def process_manually():
     try:       
         # Gets the portion size
         data = request.get_json()
-        
         food_Name = data.get('foodName')
         portion_Size = data.get('portion')
         uid = data.get('uid')
@@ -107,12 +106,22 @@ def process_manually():
         print("Food Name: ", food_Name)
         print("Portion Size: ", portion_Size)
         
-        if not portion_Size:
-            return jsonify({'error': 'No portion size provided'}), 400
+        # if not portion_Size:
+        #     return jsonify({'error': 'No portion size provided'}), 400
+
+        # if not food_Name:
+        #     return jsonify({'error': 'No Food name provided'}), 400
 
         # Call the functions to get calories
         calories = getCalories.Calories(food_Name, portion_Size)
         print("Calories: ", calories)
+
+        # result = IdentifyFoodYoloManual.Identification(food_Name, portion_Size)
+        # print("Result Manual: ", result)
+
+        # if result == "Unknown":
+        #     return jsonify({'error': 'Food not found'})
+
         # Insert data into the database
         insert_food_data(food_Name, portion_Size, calories, uid)
         return jsonify({
@@ -122,7 +131,7 @@ def process_manually():
             })
     
     except Exception as e:
-            return jsonify({'error': f'Error processing image: {str(e)}'}), 500
+            return jsonify({'error': f'Error processing image: {str(e)}'})
     
 # Method to entering food into database
 def insert_food_data(food_name, portion_size, overallCalories, uid):
