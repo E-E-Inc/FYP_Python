@@ -1,3 +1,6 @@
+## Overview 
+This repository contains the backend code for the Food Logix app, including both the main service and the food detection microservice. 
+
 ## Setting Up the Environment
 To run this project, we recommend creating a Python virtual environment and installing the required packages.
 
